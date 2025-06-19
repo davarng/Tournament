@@ -5,14 +5,14 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Tournament.Api.Data;
+using Tournament.Data.Data;
 using Tournament.Core.Entities;
 
 namespace Tournament.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class TournamentDetailsController(TournamentApiContext _context) : ControllerBase
+    public class TournamentDetailsController(TournamentContext _context) : ControllerBase
     {
         // GET: api/TournamentDetails
         [HttpGet]
