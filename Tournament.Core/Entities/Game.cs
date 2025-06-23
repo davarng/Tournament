@@ -5,13 +5,12 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace Tournament.Core.Entities
+namespace Tournament.Core.Entities;
+
+public class Game
 {
-    public class Game
-    {
-        public int Id { get; set; }
-        public string Title { get; set; }
-        public DateTime Time { get; set; }
-        public int TournamentId { get; set; }
-    }
+    public int Id { get; set; }
+    public string Title { get; set; }
+    public DateTime Time { get; set; }
+    public int TournamentId { get; set; }
 }
