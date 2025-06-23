@@ -7,96 +7,96 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Tournament.Data.Data;
 using Tournament.Core.Entities;
+using Tournament.Core.Repositories;
 
-namespace Tournament.Api.Controllers
+namespace Tournament.Api.Controllers;
+
+[Route("api/[controller]")]
+[ApiController]
+public class GamesController(IUnitOfWork unitOfWork) : ControllerBase
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class GamesController(TournamentContext context) : ControllerBase
+
+    // GET: api/Games
+    [HttpGet]
+    public async Task<ActionResult<IEnumerable<Game>>> GetGame()
     {
+        return await unitOfWork.GameRepository.GetAllAsync().ContinueWith(task => task.Result.ToList());
+    }
 
-        // GET: api/Games
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<Game>>> GetGame()
+    // GET: api/Games/5
+    [HttpGet("{id}")]
+    public async Task<ActionResult<Game>> GetGame(int id)
+    {
+        var game = await unitOfWork.GameRepository.GetAsync(id);
+
+        if (game == null)
         {
-            return await context.Game.ToListAsync();
+            return NotFound();
         }
 
-        // GET: api/Games/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Game>> GetGame(int id)
-        {
-            var game = await context.Game.FindAsync(id);
+        return game;
+    }
 
-            if (game == null)
+    // PUT: api/Games/5
+    // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+    [HttpPut("{id}")]
+    public async Task<IActionResult> PutGame(int id, Game game)
+    {
+        if (id != game.Id)
+        {
+            return BadRequest();
+        }
+
+        unitOfWork.GameRepository.Update(game);
+
+        try
+        {
+            await unitOfWork.CompleteAsync();
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            if (!await GameExists(id))
             {
                 return NotFound();
             }
-
-            return game;
-        }
-
-        // PUT: api/Games/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutGame(int id, Game game)
-        {
-            if (id != game.Id)
+            else
             {
-                return BadRequest();
+                throw;
             }
-
-            context.Entry(game).State = EntityState.Modified;
-
-            try
-            {
-                await context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!GameExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
         }
 
-        // POST: api/Games
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
-        public async Task<ActionResult<Game>> PostGame(Game game)
+        return NoContent();
+    }
+
+    // POST: api/Games
+    // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+    [HttpPost]
+    public async Task<ActionResult<Game>> PostGame(Game game)
+    {
+        unitOfWork.GameRepository.Add(game);
+        await unitOfWork.CompleteAsync();
+
+        return CreatedAtAction("GetGame", new { id = game.Id }, game);
+    }
+
+    // DELETE: api/Games/5
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeleteGame(int id)
+    {
+        var game = await unitOfWork.GameRepository.GetAsync(id);
+        if (game == null)
         {
-            context.Game.Add(game);
-            await context.SaveChangesAsync();
-
-            return CreatedAtAction("GetGame", new { id = game.Id }, game);
+            return NotFound();
         }
+        unitOfWork.GameRepository.Remove(game);
+        await unitOfWork.CompleteAsync();
 
-        // DELETE: api/Games/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteGame(int id)
-        {
-            var game = await context.Game.FindAsync(id);
-            if (game == null)
-            {
-                return NotFound();
-            }
+        return NoContent();
+    }
 
-            context.Game.Remove(game);
-            await context.SaveChangesAsync();
-
-            return NoContent();
-        }
-
-        private bool GameExists(int id)
-        {
-            return context.Game.Any(e => e.Id == id);
-        }
+    private async Task<bool> GameExists(int id)
+    {
+        var game = await unitOfWork.GameRepository.GetAsync(id);
+        return game != null;
     }
 }
