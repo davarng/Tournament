@@ -24,6 +24,13 @@ namespace Tournament.Api
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+            builder.Services.AddCors(builder =>
+            {
+                builder.AddPolicy("AllowAll",
+                builder => builder.AllowAnyOrigin()
+                .AllowAnyMethod()
+                .AllowAnyHeader());
+            });
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -35,6 +42,8 @@ namespace Tournament.Api
             }
 
             app.UseHttpsRedirection();
+
+            app.UseCors("AllowAll");
 
             app.UseAuthorization();
 
