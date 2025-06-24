@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
+using Tournament.Core.Dto;
 using Tournament.Core.Entities;
 
 namespace Tournament.Data.Data;
@@ -12,8 +13,8 @@ public class AutoMapperProfile : Profile
 {
     public AutoMapperProfile()
     {
-        // CreateMap<TournamentDetails, TournamentDetailsDto>();
-        // CreateMap<Game, GameDto>();
+        CreateMap<TournamentDetails, TournamentDto>().ReverseMap();
+        CreateMap<Game, GameDto>().ReverseMap();
         // CreateMap<GameCreateDto, Game>();
         // CreateMap<TournamentDetailsCreateDto, Game>();
         // CreateMap<Company, CompanyDto>().ForMember(dest => dest.Address, opt => opt.MapFrom
