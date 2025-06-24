@@ -9,9 +9,9 @@ using Tournament.Core.Entities;
 
 namespace Tournament.Data.Data;
 
-public class AutoMapperProfile : Profile
+public class TournamentMappings : Profile
 {
-    public AutoMapperProfile()
+    public TournamentMappings()
     {
         CreateMap<TournamentDetails, TournamentDto>().ReverseMap();
         CreateMap<Game, GameDto>().ReverseMap();
