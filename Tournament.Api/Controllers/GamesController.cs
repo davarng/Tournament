@@ -1,31 +1,31 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Tournament.Data.Data;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Tournament.Core.Dto;
 using Tournament.Core.Entities;
 using Tournament.Core.Repositories;
+using Tournament.Data.Data;
 
 namespace Tournament.Api.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class GamesController(IUnitOfWork unitOfWork) : ControllerBase
+public class GamesController(IUnitOfWork unitOfWork, IMapper mapper) : ControllerBase
 {
-
-    // GET: api/Games
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<Game>>> GetGame()
+    public async Task<ActionResult<IEnumerable<GameDto>>> GetGame()
     {
-        return await unitOfWork.GameRepository.GetAllAsync().ContinueWith(task => task.Result.ToList());
+        var games = await unitOfWork.GameRepository.GetAllAsync();
+        return Ok(games.Select(g => mapper.Map<GameDto>(g)));
     }
 
-    // GET: api/Games/5
     [HttpGet("{id}")]
-    public async Task<ActionResult<Game>> GetGame(int id)
+    public async Task<ActionResult<GameDto>> GetGame(int id)
     {
         var game = await unitOfWork.GameRepository.GetAsync(id);
 
@@ -34,19 +34,13 @@ public class GamesController(IUnitOfWork unitOfWork) : ControllerBase
             return NotFound();
         }
 
-        return game;
+        return mapper.Map<GameDto>(game);
     }
 
-    // PUT: api/Games/5
-    // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
     [HttpPut("{id}")]
-    public async Task<IActionResult> PutGame(int id, Game game)
+    public async Task<IActionResult> PutGame(int id, GameDto gameDto)
     {
-        if (id != game.Id)
-        {
-            return BadRequest();
-        }
-
+        var game = mapper.Map<Game>(gameDto);
         unitOfWork.GameRepository.Update(game);
 
         try
@@ -68,18 +62,16 @@ public class GamesController(IUnitOfWork unitOfWork) : ControllerBase
         return NoContent();
     }
 
-    // POST: api/Games
-    // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
     [HttpPost]
-    public async Task<ActionResult<Game>> PostGame(Game game)
+    public async Task<ActionResult<GameDto>> PostGame(GameDto gameDto)
     {
+        var game = mapper.Map<Game>(gameDto);
         unitOfWork.GameRepository.Add(game);
         await unitOfWork.CompleteAsync();
 
-        return CreatedAtAction("GetGame", new { id = game.Id }, game);
+        return CreatedAtAction("GetGame", new { id = game.Id }, mapper.Map<GameDto>(game));
     }
 
-    // DELETE: api/Games/5
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteGame(int id)
     {
