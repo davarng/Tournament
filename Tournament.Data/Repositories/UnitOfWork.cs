@@ -5,17 +5,23 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Tournament.Core.Repositories;
+using Tournament.Data.Data;
 
 namespace Tournament.Data.Repositories;
 
-public class UnitOfWork(
-    DbContext context,
-    ITournamentRepository tournamentRepository,
-    IGameRepository gameRepository) : IUnitOfWork
+public class UnitOfWork : IUnitOfWork
 {
-    public ITournamentRepository TournamentRepository => tournamentRepository;
+    private readonly TournamentContext _context;
 
-    public IGameRepository GameRepository => gameRepository;
+    public ITournamentRepository TournamentRepository { get; }
+    public IGameRepository GameRepository { get; }
 
-    public async Task CompleteAsync() => await context.SaveChangesAsync();
+    public UnitOfWork(TournamentContext context)
+    {
+        _context = context;
+        TournamentRepository = new TournamentRepository(context);
+        GameRepository = new GameRepository(context);
+    }
+
+    public async Task CompleteAsync() => await _context.SaveChangesAsync();
 }
