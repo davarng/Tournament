@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -81,6 +82,28 @@ public class GamesController(IUnitOfWork unitOfWork, IMapper mapper) : Controlle
             return NotFound();
         }
         unitOfWork.GameRepository.Remove(game);
+        await unitOfWork.CompleteAsync();
+
+        return NoContent();
+    }
+
+    public async Task<IActionResult> PatchGame(int id, JsonPatchDocument<GameDto> patchDoc)
+    {
+        var game = await unitOfWork.GameRepository.GetAsync(id);
+        if (game == null)
+            return NotFound("Game not found");
+
+        var dto = mapper.Map<GameDto>(game);
+        patchDoc.ApplyTo(dto, ModelState);
+
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
+
+        if (!TryValidateModel(dto))
+            return BadRequest("Invalid game patch data");
+
+        mapper.Map(dto, game);
+        unitOfWork.GameRepository.Update(game);
         await unitOfWork.CompleteAsync();
 
         return NoContent();

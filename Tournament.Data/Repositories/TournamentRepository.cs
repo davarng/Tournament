@@ -38,6 +38,6 @@ public class TournamentRepository(DbContext context) : ITournamentRepository
 
     public void Update(TournamentDetails tournament)
     {
-        throw new NotImplementedException();
+        context.Entry(tournament).State = EntityState.Modified;
     }
 }

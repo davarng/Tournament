@@ -38,6 +38,6 @@ public class GameRepository(DbContext context) : IGameRepository
 
     public void Update(Game game)
     {
-        throw new NotImplementedException();
+        context.Entry(game).State = EntityState.Modified;
     }
 }

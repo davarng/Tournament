@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -10,6 +11,7 @@ using Tournament.Core.Dto;
 using Tournament.Core.Entities;
 using Tournament.Core.Repositories;
 using Tournament.Data.Data;
+using Tournament.Data.Repositories;
 
 namespace Tournament.Api.Controllers;
 
@@ -78,6 +80,29 @@ public class TournamentDetailsController(IUnitOfWork unitOfWork, IMapper mapper)
         }
 
         unitOfWork.TournamentRepository.Remove(tournament);
+        await unitOfWork.CompleteAsync();
+
+        return NoContent();
+    }
+
+    [HttpPatch("{id}")]
+    public async Task<IActionResult> PatchTournamentDetails(int id, JsonPatchDocument<TournamentDto> patchDoc)
+    {
+        var tournament = await unitOfWork.TournamentRepository.GetAsync(id);
+        if (tournament == null)
+            return NotFound("Tournament not found");
+
+        var dto = mapper.Map<TournamentDto>(tournament);
+        patchDoc.ApplyTo(dto, ModelState);
+
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
+
+        if (!TryValidateModel(dto))
+            return BadRequest("Invalid tournament patch data");
+
+        mapper.Map(dto, tournament);
+        unitOfWork.TournamentRepository.Update(tournament);
         await unitOfWork.CompleteAsync();
 
         return NoContent();
