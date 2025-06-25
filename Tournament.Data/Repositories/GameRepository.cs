@@ -6,11 +6,17 @@ using System.Text;
 using System.Threading.Tasks;
 using Tournament.Core.Entities;
 using Tournament.Core.Repositories;
+using Tournament.Data.Data;
 
 namespace Tournament.Data.Repositories;
 
-public class GameRepository(DbContext context) : IGameRepository
+public class GameRepository(TournamentContext context) : IGameRepository
 {
+    public async Task<Game?> GetTitleAsync(string title)
+    {
+        return await context.Game
+            .FirstOrDefaultAsync(g => g.Title == title);
+    }
     public void Add(Game game)
     {
         throw new NotImplementedException();

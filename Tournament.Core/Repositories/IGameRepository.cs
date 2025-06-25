@@ -12,6 +12,7 @@ public interface IGameRepository
     Task<IEnumerable<Game>> GetAllAsync();
     Task<Game> GetAsync(int id);
     Task<bool> AnyAsync(int id);
+    Task<Game?> GetTitleAsync(string title);
     void Add(Game game);
     void Update(Game game);
     void Remove(Game game);

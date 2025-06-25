@@ -25,10 +25,10 @@ public class GamesController(IUnitOfWork unitOfWork, IMapper mapper) : Controlle
         return Ok(games.Select(g => mapper.Map<GameDto>(g)));
     }
 
-    [HttpGet("{id}")]
-    public async Task<ActionResult<GameDto>> GetGame(int id)
+    [HttpGet("{title}")]
+    public async Task<ActionResult<GameDto>> GetGame(string title)
     {
-        var game = await unitOfWork.GameRepository.GetAsync(id);
+        var game = await unitOfWork.GameRepository.GetTitleAsync(title);
 
         if (game == null)
         {

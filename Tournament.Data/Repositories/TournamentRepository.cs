@@ -6,10 +6,11 @@ using System.Text;
 using System.Threading.Tasks;
 using Tournament.Core.Entities;
 using Tournament.Core.Repositories;
+using Tournament.Data.Data;
 
 namespace Tournament.Data.Repositories;
 
-public class TournamentRepository(DbContext context) : ITournamentRepository
+public class TournamentRepository(TournamentContext context) : ITournamentRepository
 {
     public void Add(TournamentDetails tournament)
     {
