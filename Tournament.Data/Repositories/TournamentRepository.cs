@@ -27,9 +27,16 @@ public class TournamentRepository(TournamentContext context) : ITournamentReposi
         throw new NotImplementedException();
     }
 
-    public Task<TournamentDetails> GetAsync(int id)
+    public async Task<TournamentDetails?> GetAsync(int id, bool includeGames = false)
     {
-        throw new NotImplementedException();
+        IQueryable<TournamentDetails> query = context.TournamentDetails;
+
+        if (includeGames)
+        {
+            query = query.Include(t => t.Games);
+        }
+
+        return await query.FirstOrDefaultAsync(t => t.Id == id);
     }
 
     public void Remove(TournamentDetails tournament)

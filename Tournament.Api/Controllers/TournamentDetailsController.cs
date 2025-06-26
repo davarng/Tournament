@@ -20,16 +20,16 @@ namespace Tournament.Api.Controllers;
 public class TournamentDetailsController(IUnitOfWork unitOfWork, IMapper mapper) : ControllerBase
 {
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<TournamentDto>>> GetTournamentDetails()
+    public async Task<ActionResult<IEnumerable<TournamentDto>>> GetAllTournamentDetails()
     {
         var tournaments = await unitOfWork.TournamentRepository.GetAllAsync();
         return Ok(tournaments.Select(t => mapper.Map<TournamentDto>(t)));
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<TournamentDto>> GetTournamentDetails(int id)
+    public async Task<ActionResult<TournamentDto>> GetTournamentDetails(int id, bool includeGames = false)
     {
-        var tournament = await unitOfWork.TournamentRepository.GetAsync(id);
+        var tournament = await unitOfWork.TournamentRepository.GetAsync(id, includeGames);
         if (tournament == null)
         {
             return NotFound();
