@@ -29,17 +29,17 @@ public class GameRepository(TournamentContext context) : IGameRepository
 
     public async Task<IEnumerable<Game>> GetAllAsync()
     {
-        throw new NotImplementedException();
+        return await context.Game.ToListAsync();
     }
 
-    public async Task<Game> GetAsync(int id)
+    public async Task<Game?> GetAsync(int id)
     {
-        throw new NotImplementedException();
+        return await context.Game.FindAsync(id);
     }
 
     public void Remove(Game game)
     {
-        throw new NotImplementedException();
+        context.Game.Remove(game);
     }
 
     public void Update(Game game)
