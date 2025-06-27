@@ -37,7 +37,7 @@ public static class ApplicationBuilderExtension
 
                 await db.SaveChangesAsync();
             }
-            catch (Exception ex)
+            catch
             {
                 throw;
             }
