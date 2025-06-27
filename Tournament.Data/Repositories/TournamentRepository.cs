@@ -14,17 +14,17 @@ public class TournamentRepository(TournamentContext context) : ITournamentReposi
 {
     public void Add(TournamentDetails tournament)
     {
-        throw new NotImplementedException();
+        context.TournamentDetails.Add(tournament);
     }
 
-    public Task<bool> AnyAsync(int id)
+    public async Task<bool> AnyAsync(int id)
     {
-        throw new NotImplementedException();
+        return await context.TournamentDetails.AnyAsync(t => t.Id == id);
     }
 
-    public Task<IEnumerable<TournamentDetails>> GetAllAsync()
+    public async Task<IEnumerable<TournamentDetails>> GetAllAsync()
     {
-        throw new NotImplementedException();
+        return await context.TournamentDetails.ToListAsync();
     }
 
     public async Task<TournamentDetails?> GetAsync(int id, bool includeGames = false)
@@ -41,7 +41,7 @@ public class TournamentRepository(TournamentContext context) : ITournamentReposi
 
     public void Remove(TournamentDetails tournament)
     {
-        throw new NotImplementedException();
+        context.TournamentDetails.Remove(tournament);
     }
 
     public void Update(TournamentDetails tournament)
