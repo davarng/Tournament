@@ -19,20 +19,20 @@ public class GameRepository(TournamentContext context) : IGameRepository
     }
     public void Add(Game game)
     {
-        throw new NotImplementedException();
+        context.Game.Add(game);
     }
 
-    public Task<bool> AnyAsync(int id)
+    public async Task<bool> AnyAsync(int id)
+    {
+        return await context.Game.AnyAsync(g => g.Id == id);
+    }
+
+    public async Task<IEnumerable<Game>> GetAllAsync()
     {
         throw new NotImplementedException();
     }
 
-    public Task<IEnumerable<Game>> GetAllAsync()
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<Game> GetAsync(int id)
+    public async Task<Game> GetAsync(int id)
     {
         throw new NotImplementedException();
     }
