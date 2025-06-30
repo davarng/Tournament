@@ -38,9 +38,12 @@ public class TournamentDetailsController(IUnitOfWork unitOfWork, IMapper mapper)
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> PutTournamentDetails(int id, TournamentDto tournamentDto)
+    public async Task<IActionResult> PutTournamentDetails(int id, TournamentUpdateDto tournamentUpdateDto)
     {
-        var tournament = mapper.Map<TournamentDetails>(tournamentDto);
+        var tournament = await unitOfWork.TournamentRepository.GetAsync(id);
+        if (tournament == null) return NotFound();
+
+        mapper.Map(tournamentUpdateDto, tournament);
         unitOfWork.TournamentRepository.Update(tournament);
 
         try
@@ -49,10 +52,7 @@ public class TournamentDetailsController(IUnitOfWork unitOfWork, IMapper mapper)
         }
         catch (DbUpdateConcurrencyException)
         {
-            if (!await TournamentDetailsExists(id))
-            {
-                return NotFound();
-            }
+            if (!await TournamentDetailsExists(id)) return NotFound();
             throw;
         }
 
@@ -60,9 +60,9 @@ public class TournamentDetailsController(IUnitOfWork unitOfWork, IMapper mapper)
     }
 
     [HttpPost]
-    public async Task<ActionResult<TournamentDto>> PostTournamentDetails(TournamentDto tournamentDto)
+    public async Task<ActionResult<TournamentDto>> PostTournamentDetails(TournamentCreateDto tournamentCreateDto)
     {
-        var tournament = mapper.Map<TournamentDetails>(tournamentDto);
+        var tournament = mapper.Map<TournamentDetails>(tournamentCreateDto);
         unitOfWork.TournamentRepository.Add(tournament);
         await unitOfWork.CompleteAsync();
 
@@ -86,13 +86,13 @@ public class TournamentDetailsController(IUnitOfWork unitOfWork, IMapper mapper)
     }
 
     [HttpPatch("{id}")]
-    public async Task<IActionResult> PatchTournamentDetails(int id, JsonPatchDocument<TournamentDto> patchDoc)
+    public async Task<IActionResult> PatchTournamentDetails(int id, JsonPatchDocument<TournamentPatchDto> patchDoc)
     {
         var tournament = await unitOfWork.TournamentRepository.GetAsync(id);
         if (tournament == null)
             return NotFound("Tournament not found");
 
-        var dto = mapper.Map<TournamentDto>(tournament);
+        var dto = mapper.Map<TournamentPatchDto>(tournament);
         patchDoc.ApplyTo(dto, ModelState);
 
         if (!ModelState.IsValid)

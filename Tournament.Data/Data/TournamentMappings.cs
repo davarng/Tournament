@@ -14,7 +14,14 @@ public class TournamentMappings : Profile
     public TournamentMappings()
     {
         CreateMap<TournamentDetails, TournamentDto>().ReverseMap();
+        CreateMap<TournamentCreateDto, TournamentDto>().ReverseMap();
+        CreateMap<TournamentUpdateDto, TournamentDto>().ReverseMap();
+        CreateMap<TournamentPatchDto, TournamentDto>().ReverseMap();
         CreateMap<Game, GameDto>().ReverseMap();
+        CreateMap<GameCreateDto, Game>().ReverseMap();
+        CreateMap<GameUpdateDto, Game>().ReverseMap();
+        CreateMap<GamePatchDto, Game>().ReverseMap();
+
         // CreateMap<GameCreateDto, Game>();
         // CreateMap<TournamentDetailsCreateDto, Game>();
         // CreateMap<Company, CompanyDto>().ForMember(dest => dest.Address, opt => opt.MapFrom

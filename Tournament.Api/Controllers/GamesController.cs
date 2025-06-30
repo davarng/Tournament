@@ -39,10 +39,14 @@ public class GamesController(IUnitOfWork unitOfWork, IMapper mapper) : Controlle
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> PutGame(int id, GameDto gameDto)
+    public async Task<IActionResult> PutGame(int id, GameUpdateDto gameDto)
     {
-        var game = mapper.Map<Game>(gameDto);
-        unitOfWork.GameRepository.Update(game);
+        var existingGame = await unitOfWork.GameRepository.GetAsync(id);
+        if (existingGame == null)
+            return NotFound();
+
+        mapper.Map(gameDto, existingGame);
+        unitOfWork.GameRepository.Update(existingGame);
 
         try
         {
@@ -51,26 +55,22 @@ public class GamesController(IUnitOfWork unitOfWork, IMapper mapper) : Controlle
         catch (DbUpdateConcurrencyException)
         {
             if (!await GameExists(id))
-            {
                 return NotFound();
-            }
             else
-            {
                 throw;
-            }
         }
 
         return NoContent();
     }
 
     [HttpPost]
-    public async Task<ActionResult<GameDto>> PostGame(GameDto gameDto)
+    public async Task<ActionResult<GameDto>> PostGame(GameCreateDto gameDto)
     {
         var game = mapper.Map<Game>(gameDto);
         unitOfWork.GameRepository.Add(game);
         await unitOfWork.CompleteAsync();
 
-        return CreatedAtAction("GetGame", new { id = game.Id }, mapper.Map<GameDto>(game));
+        return CreatedAtAction(nameof(GetGame), new { title = game.Title }, mapper.Map<GameDto>(game));
     }
 
     [HttpDelete("{id}")]
@@ -88,13 +88,13 @@ public class GamesController(IUnitOfWork unitOfWork, IMapper mapper) : Controlle
     }
 
     [HttpPatch("{id}")]
-    public async Task<IActionResult> PatchGame(int id, JsonPatchDocument<GameDto> patchDoc)
+    public async Task<IActionResult> PatchGame(int id, JsonPatchDocument<GamePatchDto> patchDoc)
     {
         var game = await unitOfWork.GameRepository.GetAsync(id);
         if (game == null)
             return NotFound("Game not found");
 
-        var dto = mapper.Map<GameDto>(game);
+        var dto = mapper.Map<GamePatchDto>(game);
         patchDoc.ApplyTo(dto, ModelState);
 
         if (!ModelState.IsValid)
