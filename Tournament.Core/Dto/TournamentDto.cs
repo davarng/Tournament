@@ -16,4 +16,6 @@ public class TournamentDto
     public string Title { get; set; }
     public DateTime StartDate { get; set; }
     public DateTime EndDate => StartDate.AddMonths(3);
+
+    public List<GameDto?> Games { get; set; }
 }

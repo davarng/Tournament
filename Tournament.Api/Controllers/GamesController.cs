@@ -87,6 +87,7 @@ public class GamesController(IUnitOfWork unitOfWork, IMapper mapper) : Controlle
         return NoContent();
     }
 
+    [HttpPatch("{id}")]
     public async Task<IActionResult> PatchGame(int id, JsonPatchDocument<GameDto> patchDoc)
     {
         var game = await unitOfWork.GameRepository.GetAsync(id);

@@ -14,32 +14,32 @@ public class GameRepository(TournamentContext context) : IGameRepository
 {
     public async Task<Game?> GetTitleAsync(string title)
     {
-        return await context.Game
+        return await context.Games
             .FirstOrDefaultAsync(g => g.Title == title);
     }
     public void Add(Game game)
     {
-        context.Game.Add(game);
+        context.Games.Add(game);
     }
 
     public async Task<bool> AnyAsync(int id)
     {
-        return await context.Game.AnyAsync(g => g.Id == id);
+        return await context.Games.AnyAsync(g => g.Id == id);
     }
 
     public async Task<IEnumerable<Game>> GetAllAsync()
     {
-        return await context.Game.ToListAsync();
+        return await context.Games.ToListAsync();
     }
 
     public async Task<Game?> GetAsync(int id)
     {
-        return await context.Game.FindAsync(id);
+        return await context.Games.FindAsync(id);
     }
 
     public void Remove(Game game)
     {
-        context.Game.Remove(game);
+        context.Games.Remove(game);
     }
 
     public void Update(Game game)
