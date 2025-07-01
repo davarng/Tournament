@@ -31,16 +31,17 @@ public class GamesController(IUnitOfWork unitOfWork, IMapper mapper) : Controlle
         var game = await unitOfWork.GameRepository.GetTitleAsync(title);
 
         if (game == null)
-        {
             return NotFound();
-        }
 
-        return mapper.Map<GameDto>(game);
+        return Ok(mapper.Map<GameDto>(game));
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> PutGame(int id, GameUpdateDto gameDto)
+    public async Task<IActionResult> PutGame(int id, [FromBody] GameUpdateDto gameDto)
     {
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
+
         var existingGame = await unitOfWork.GameRepository.GetAsync(id);
         if (existingGame == null)
             return NotFound();
@@ -52,23 +53,31 @@ public class GamesController(IUnitOfWork unitOfWork, IMapper mapper) : Controlle
         {
             await unitOfWork.CompleteAsync();
         }
-        catch (DbUpdateConcurrencyException)
+        catch
         {
-            if (!await GameExists(id))
-                return NotFound();
-            else
-                throw;
+            return StatusCode(500, "Failed to update game.");
         }
 
         return NoContent();
     }
 
     [HttpPost]
-    public async Task<ActionResult<GameDto>> PostGame(GameCreateDto gameDto)
+    public async Task<ActionResult<GameDto>> PostGame([FromBody] GameCreateDto gameDto)
     {
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
+
         var game = mapper.Map<Game>(gameDto);
         unitOfWork.GameRepository.Add(game);
-        await unitOfWork.CompleteAsync();
+
+        try
+        {
+            await unitOfWork.CompleteAsync();
+        }
+        catch
+        {
+            return StatusCode(500, "Failed to create game.");
+        }
 
         return CreatedAtAction(nameof(GetGame), new { title = game.Title }, mapper.Map<GameDto>(game));
     }
@@ -78,17 +87,24 @@ public class GamesController(IUnitOfWork unitOfWork, IMapper mapper) : Controlle
     {
         var game = await unitOfWork.GameRepository.GetAsync(id);
         if (game == null)
-        {
             return NotFound();
-        }
+
         unitOfWork.GameRepository.Remove(game);
-        await unitOfWork.CompleteAsync();
+
+        try
+        {
+            await unitOfWork.CompleteAsync();
+        }
+        catch
+        {
+            return StatusCode(500, "Failed to delete game.");
+        }
 
         return NoContent();
     }
 
     [HttpPatch("{id}")]
-    public async Task<IActionResult> PatchGame(int id, JsonPatchDocument<GamePatchDto> patchDoc)
+    public async Task<IActionResult> PatchGame(int id, [FromBody] JsonPatchDocument<GamePatchDto> patchDoc)
     {
         var game = await unitOfWork.GameRepository.GetAsync(id);
         if (game == null)
@@ -97,15 +113,20 @@ public class GamesController(IUnitOfWork unitOfWork, IMapper mapper) : Controlle
         var dto = mapper.Map<GamePatchDto>(game);
         patchDoc.ApplyTo(dto, ModelState);
 
-        if (!ModelState.IsValid)
+        if (!ModelState.IsValid || !TryValidateModel(dto))
             return BadRequest(ModelState);
-
-        if (!TryValidateModel(dto))
-            return BadRequest("Invalid game patch data");
 
         mapper.Map(dto, game);
         unitOfWork.GameRepository.Update(game);
-        await unitOfWork.CompleteAsync();
+
+        try
+        {
+            await unitOfWork.CompleteAsync();
+        }
+        catch
+        {
+            return StatusCode(500, "Failed to patch game.");
+        }
 
         return NoContent();
     }

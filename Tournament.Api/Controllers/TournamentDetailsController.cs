@@ -31,17 +31,20 @@ public class TournamentDetailsController(IUnitOfWork unitOfWork, IMapper mapper)
     {
         var tournament = await unitOfWork.TournamentRepository.GetAsync(id, includeGames);
         if (tournament == null)
-        {
             return NotFound();
-        }
-        return mapper.Map<TournamentDto>(tournament);
+
+        return Ok(mapper.Map<TournamentDto>(tournament));
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> PutTournamentDetails(int id, TournamentUpdateDto tournamentUpdateDto)
+    public async Task<IActionResult> PutTournamentDetails(int id, [FromBody] TournamentUpdateDto tournamentUpdateDto)
     {
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
+
         var tournament = await unitOfWork.TournamentRepository.GetAsync(id);
-        if (tournament == null) return NotFound();
+        if (tournament == null)
+            return NotFound();
 
         mapper.Map(tournamentUpdateDto, tournament);
         unitOfWork.TournamentRepository.Update(tournament);
@@ -50,24 +53,34 @@ public class TournamentDetailsController(IUnitOfWork unitOfWork, IMapper mapper)
         {
             await unitOfWork.CompleteAsync();
         }
-        catch (DbUpdateConcurrencyException)
+        catch
         {
-            if (!await TournamentDetailsExists(id)) return NotFound();
-            throw;
+            return StatusCode(500, "Failed to update tournament.");
         }
 
         return NoContent();
     }
 
     [HttpPost]
-    public async Task<ActionResult<TournamentDto>> PostTournamentDetails(TournamentCreateDto tournamentCreateDto)
+    public async Task<ActionResult<TournamentDto>> PostTournamentDetails([FromBody] TournamentCreateDto tournamentCreateDto)
     {
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
+
         var tournament = mapper.Map<TournamentDetails>(tournamentCreateDto);
         unitOfWork.TournamentRepository.Add(tournament);
-        await unitOfWork.CompleteAsync();
+
+        try
+        {
+            await unitOfWork.CompleteAsync();
+        }
+        catch
+        {
+            return StatusCode(500, "Failed to create tournament.");
+        }
 
         var resultDto = mapper.Map<TournamentDto>(tournament);
-        return CreatedAtAction("GetTournamentDetails", new { id = tournament.Id }, resultDto);
+        return CreatedAtAction(nameof(GetTournamentDetails), new { id = tournament.Id }, resultDto);
     }
 
     [HttpDelete("{id}")]
@@ -75,18 +88,24 @@ public class TournamentDetailsController(IUnitOfWork unitOfWork, IMapper mapper)
     {
         var tournament = await unitOfWork.TournamentRepository.GetAsync(id);
         if (tournament == null)
-        {
             return NotFound();
-        }
 
         unitOfWork.TournamentRepository.Remove(tournament);
-        await unitOfWork.CompleteAsync();
+
+        try
+        {
+            await unitOfWork.CompleteAsync();
+        }
+        catch
+        {
+            return StatusCode(500, "Failed to delete tournament.");
+        }
 
         return NoContent();
     }
 
     [HttpPatch("{id}")]
-    public async Task<IActionResult> PatchTournamentDetails(int id, JsonPatchDocument<TournamentPatchDto> patchDoc)
+    public async Task<IActionResult> PatchTournamentDetails(int id, [FromBody] JsonPatchDocument<TournamentPatchDto> patchDoc)
     {
         var tournament = await unitOfWork.TournamentRepository.GetAsync(id);
         if (tournament == null)
@@ -95,15 +114,20 @@ public class TournamentDetailsController(IUnitOfWork unitOfWork, IMapper mapper)
         var dto = mapper.Map<TournamentPatchDto>(tournament);
         patchDoc.ApplyTo(dto, ModelState);
 
-        if (!ModelState.IsValid)
+        if (!ModelState.IsValid || !TryValidateModel(dto))
             return BadRequest(ModelState);
-
-        if (!TryValidateModel(dto))
-            return BadRequest("Invalid tournament patch data");
 
         mapper.Map(dto, tournament);
         unitOfWork.TournamentRepository.Update(tournament);
-        await unitOfWork.CompleteAsync();
+
+        try
+        {
+            await unitOfWork.CompleteAsync();
+        }
+        catch
+        {
+            return StatusCode(500, "Failed to patch tournament.");
+        }
 
         return NoContent();
     }
