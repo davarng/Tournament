@@ -17,7 +17,7 @@ namespace Tournament.Presentation.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class GamesController(IUnitOfWork unitOfWork, IMapper mapper, IServiceManager service) : ControllerBase
+public class GamesController(IServiceManager serviceManager) : ControllerBase
 {
     [HttpGet]
     public async Task<ActionResult<IEnumerable<GameDto>>> GetGame()

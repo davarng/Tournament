@@ -18,7 +18,7 @@ namespace Tournament.Presentation.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class TournamentDetailsController(IUnitOfWork unitOfWork, IMapper mapper, IServiceManager service) : ControllerBase
+public class TournamentDetailsController(IServiceManager serviceManager) : ControllerBase
 {
     [HttpGet]
     public async Task<ActionResult<IEnumerable<TournamentDto>>> GetAllTournamentDetails()

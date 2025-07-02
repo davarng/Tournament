@@ -1,14 +1,16 @@
-﻿using Service.Contracts;
+﻿using AutoMapper;
+using Service.Contracts;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Tournament.Core.Dto;
+using Tournament.Core.Repositories;
 
 namespace Tournament.Services
 {
-    public class GameService : IGameService
+    public class GameService(IMapper mapper, IUnitOfWork unitOfWork) : IGameService
     {
         public Task<GameDto> CreateAsync(GameCreateDto dto)
         {
