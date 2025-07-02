@@ -70,11 +70,6 @@ public class TournamentDetailsController(IServiceManager serviceManager) : Contr
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteTournamentDetails(int id)
     {
-        var tournament = await serviceManager.TournamentService.GetByIdAsync(id);
-
-        if (tournament == null)
-            return NotFound();
-
         var success = await serviceManager.TournamentService.DeleteAsync(id);
 
         if (!success)

@@ -22,19 +22,20 @@ public class GamesController(IServiceManager serviceManager) : ControllerBase
     [HttpGet]
     public async Task<ActionResult<IEnumerable<GameDto>>> GetGame()
     {
-        var games = await unitOfWork.GameRepository.GetAllAsync();
-        return Ok(games.Select(g => mapper.Map<GameDto>(g)));
+        var games = await serviceManager.GameService.GetAllAsync();
+
+        return Ok(games);
     }
 
     [HttpGet("{title}")]
     public async Task<ActionResult<GameDto>> GetGame(string title)
     {
-        var game = await unitOfWork.GameRepository.GetTitleAsync(title);
+        var game = await serviceManager.GameService.GetByTitleAsync(title);
 
         if (game == null)
             return NotFound();
 
-        return Ok(mapper.Map<GameDto>(game));
+        return Ok(game);
     }
 
     [HttpPut("{id}")]
@@ -43,21 +44,10 @@ public class GamesController(IServiceManager serviceManager) : ControllerBase
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
 
-        var existingGame = await unitOfWork.GameRepository.GetAsync(id);
-        if (existingGame == null)
-            return NotFound();
+        var result = await serviceManager.GameService.UpdateAsync(id, gameDto);
 
-        mapper.Map(gameDto, existingGame);
-        unitOfWork.GameRepository.Update(existingGame);
-
-        try
-        {
-            await unitOfWork.CompleteAsync();
-        }
-        catch
-        {
-            return StatusCode(500, "Failed to update game.");
-        }
+        if (!result)
+            return NotFound("Game not found or update failed.");
 
         return NoContent();
     }
@@ -68,38 +58,21 @@ public class GamesController(IServiceManager serviceManager) : ControllerBase
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
 
-        var game = mapper.Map<Game>(gameDto);
-        unitOfWork.GameRepository.Add(game);
+        var dto = await serviceManager.GameService.CreateAsync(gameDto);
 
-        try
-        {
-            await unitOfWork.CompleteAsync();
-        }
-        catch
-        {
-            return StatusCode(500, "Failed to create game.");
-        }
+        if (dto == null)
+            return BadRequest("Failed to create game.");
 
-        return CreatedAtAction(nameof(GetGame), new { title = game.Title }, mapper.Map<GameDto>(game));
+        return CreatedAtAction(nameof(GetGame), new { title = dto.Title }, dto);
     }
 
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteGame(int id)
     {
-        var game = await unitOfWork.GameRepository.GetAsync(id);
-        if (game == null)
-            return NotFound();
+        var result = await serviceManager.GameService.DeleteAsync(id);
 
-        unitOfWork.GameRepository.Remove(game);
-
-        try
-        {
-            await unitOfWork.CompleteAsync();
-        }
-        catch
-        {
-            return StatusCode(500, "Failed to delete game.");
-        }
+        if (!result)
+            return NotFound("Game not found or delete failed.");
 
         return NoContent();
     }
@@ -107,34 +80,20 @@ public class GamesController(IServiceManager serviceManager) : ControllerBase
     [HttpPatch("{id}")]
     public async Task<IActionResult> PatchGame(int id, [FromBody] JsonPatchDocument<GamePatchDto> patchDoc)
     {
-        var game = await unitOfWork.GameRepository.GetAsync(id);
-        if (game == null)
-            return NotFound("Game not found");
+        if (patchDoc == null)
+            return BadRequest();
 
-        var dto = mapper.Map<GamePatchDto>(game);
-        patchDoc.ApplyTo(dto, ModelState);
+        var result = await serviceManager.GameService.PatchAsync(id, patchDoc);
 
-        if (!ModelState.IsValid || !TryValidateModel(dto))
-            return BadRequest(ModelState);
-
-        mapper.Map(dto, game);
-        unitOfWork.GameRepository.Update(game);
-
-        try
-        {
-            await unitOfWork.CompleteAsync();
-        }
-        catch
-        {
-            return StatusCode(500, "Failed to patch game.");
-        }
+        if (!result)
+            return NotFound("Game not found or patch failed.");
 
         return NoContent();
     }
 
     private async Task<bool> GameExists(int id)
     {
-        var game = await unitOfWork.GameRepository.GetAsync(id);
+        var game = await serviceManager.GameService.GetByIdAsync(id)
         return game != null;
     }
 }

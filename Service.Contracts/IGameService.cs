@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.JsonPatch;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,6 +15,7 @@ namespace Service.Contracts
         Task<GameDto?> GetByTitleAsync(string title);
         Task<bool> ExistsAsync(int id);
         Task<GameDto> CreateAsync(GameCreateDto dto);
+        Task<bool> PatchAsync(int id, JsonPatchDocument<GamePatchDto> patchDoc);
         Task<bool> UpdateAsync(int id, GameUpdateDto dto);
         Task<bool> DeleteAsync(int id);
     }

@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.JsonPatch;
 using Service.Contracts;
 using System;
 using System.Collections.Generic;
@@ -38,6 +39,11 @@ namespace Tournament.Services
         }
 
         public Task<GameDto?> GetByTitleAsync(string title)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> PatchAsync(int id, JsonPatchDocument<GamePatchDto> patchDoc)
         {
             throw new NotImplementedException();
         }
