@@ -23,18 +23,19 @@ public class TournamentDetailsController(IServiceManager serviceManager) : Contr
     [HttpGet]
     public async Task<ActionResult<IEnumerable<TournamentDto>>> GetAllTournamentDetails()
     {
-        var tournaments = await unitOfWork.TournamentRepository.GetAllAsync();
-        return Ok(tournaments.Select(t => mapper.Map<TournamentDto>(t)));
+        var tournaments = await serviceManager.TournamentService.GetAllAsync();
+        return Ok(tournaments);
     }
 
     [HttpGet("{id}")]
     public async Task<ActionResult<TournamentDto>> GetTournamentDetails(int id, bool includeGames = false)
     {
-        var tournament = await unitOfWork.TournamentRepository.GetAsync(id, includeGames);
+        var tournament = await serviceManager.TournamentService.GetByIdAsync(id, includeGames);
+
         if (tournament == null)
             return NotFound();
 
-        return Ok(mapper.Map<TournamentDto>(tournament));
+        return Ok(tournament);
     }
 
     [HttpPut("{id}")]
@@ -43,21 +44,11 @@ public class TournamentDetailsController(IServiceManager serviceManager) : Contr
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
 
-        var tournament = await unitOfWork.TournamentRepository.GetAsync(id);
-        if (tournament == null)
-            return NotFound();
 
-        mapper.Map(tournamentUpdateDto, tournament);
-        unitOfWork.TournamentRepository.Update(tournament);
+        var success = await serviceManager.TournamentService.UpdateAsync(id, tournamentUpdateDto);
 
-        try
-        {
-            await unitOfWork.CompleteAsync();
-        }
-        catch
-        {
-            return StatusCode(500, "Failed to update tournament.");
-        }
+        if (!success)
+            return NotFound("Tournament not found or update failed.");
 
         return NoContent();
     }
@@ -68,39 +59,26 @@ public class TournamentDetailsController(IServiceManager serviceManager) : Contr
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
 
-        var tournament = mapper.Map<TournamentDetails>(tournamentCreateDto);
-        unitOfWork.TournamentRepository.Add(tournament);
+        var result = await serviceManager.TournamentService.CreateAsync(tournamentCreateDto);
 
-        try
-        {
-            await unitOfWork.CompleteAsync();
-        }
-        catch
-        {
+        if (result == null)
             return StatusCode(500, "Failed to create tournament.");
-        }
 
-        var resultDto = mapper.Map<TournamentDto>(tournament);
-        return CreatedAtAction(nameof(GetTournamentDetails), new { id = tournament.Id }, resultDto);
+        return CreatedAtAction(nameof(GetTournamentDetails), new { id = result.Id }, result);
     }
 
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteTournamentDetails(int id)
     {
-        var tournament = await unitOfWork.TournamentRepository.GetAsync(id);
+        var tournament = await serviceManager.TournamentService.GetByIdAsync(id);
+
         if (tournament == null)
             return NotFound();
 
-        unitOfWork.TournamentRepository.Remove(tournament);
+        var success = await serviceManager.TournamentService.DeleteAsync(id);
 
-        try
-        {
-            await unitOfWork.CompleteAsync();
-        }
-        catch
-        {
+        if (!success)
             return StatusCode(500, "Failed to delete tournament.");
-        }
 
         return NoContent();
     }
@@ -108,34 +86,21 @@ public class TournamentDetailsController(IServiceManager serviceManager) : Contr
     [HttpPatch("{id}")]
     public async Task<IActionResult> PatchTournamentDetails(int id, [FromBody] JsonPatchDocument<TournamentPatchDto> patchDoc)
     {
-        var tournament = await unitOfWork.TournamentRepository.GetAsync(id);
-        if (tournament == null)
-            return NotFound("Tournament not found");
+        if (patchDoc == null)
+            return BadRequest();
 
-        var dto = mapper.Map<TournamentPatchDto>(tournament);
-        patchDoc.ApplyTo(dto, ModelState);
+        var result = await serviceManager.TournamentService.PatchAsync(id, patchDoc);
 
-        if (!ModelState.IsValid || !TryValidateModel(dto))
-            return BadRequest(ModelState);
-
-        mapper.Map(dto, tournament);
-        unitOfWork.TournamentRepository.Update(tournament);
-
-        try
-        {
-            await unitOfWork.CompleteAsync();
-        }
-        catch
-        {
-            return StatusCode(500, "Failed to patch tournament.");
-        }
+        if (!result)
+            return NotFound("Tournament not found or failed to patch");
 
         return NoContent();
     }
 
     private async Task<bool> TournamentDetailsExists(int id)
     {
-        var tournament = await unitOfWork.TournamentRepository.GetAsync(id);
+        var tournament = await serviceManager.TournamentService.GetByIdAsync(id);
+
         return tournament != null;
     }
 }
