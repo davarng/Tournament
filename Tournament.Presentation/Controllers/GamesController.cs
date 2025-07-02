@@ -93,7 +93,7 @@ public class GamesController(IServiceManager serviceManager) : ControllerBase
 
     private async Task<bool> GameExists(int id)
     {
-        var game = await serviceManager.GameService.GetByIdAsync(id)
+        var game = await serviceManager.GameService.GetByIdAsync(id);
         return game != null;
     }
 }
