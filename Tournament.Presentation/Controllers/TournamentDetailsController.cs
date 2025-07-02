@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Service.Contracts;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,7 +18,7 @@ namespace Tournament.Presentation.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class TournamentDetailsController(IUnitOfWork unitOfWork, IMapper mapper) : ControllerBase
+public class TournamentDetailsController(IUnitOfWork unitOfWork, IMapper mapper, IServiceManager service) : ControllerBase
 {
     [HttpGet]
     public async Task<ActionResult<IEnumerable<TournamentDto>>> GetAllTournamentDetails()
