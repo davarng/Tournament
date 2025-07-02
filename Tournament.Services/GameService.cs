@@ -1,12 +1,13 @@
-﻿using System;
+﻿using Service.Contracts;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Service.Contracts
+namespace Tournament.Services
 {
-    public interface ITournamentService
+    public class GameService : IGameService
     {
     }
 }
