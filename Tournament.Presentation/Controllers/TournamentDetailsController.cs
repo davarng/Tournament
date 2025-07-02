@@ -13,7 +13,7 @@ using Tournament.Core.Repositories;
 using Tournament.Data.Data;
 using Tournament.Data.Repositories;
 
-namespace Tournament.Api.Controllers;
+namespace Tournament.Presentation.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
