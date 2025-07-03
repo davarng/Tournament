@@ -23,14 +23,22 @@ namespace Tournament.Services
             return mapper.Map<GameDto>(game);
         }
 
-        public Task<bool> DeleteAsync(int id)
+        public async Task<bool> DeleteAsync(int id)
         {
-            throw new NotImplementedException();
+            var game = await unitOfWork.GameRepository.GetAsync(id);
+            if (game == null)
+                return false;
+
+            unitOfWork.GameRepository.Remove(game);
+
+            await unitOfWork.CompleteAsync();
+            return true;
         }
 
-        public Task<bool> ExistsAsync(int id)
+        public async Task<bool> ExistsAsync(int id)
         {
-            throw new NotImplementedException();
+            var result = await unitOfWork.GameRepository.AnyAsync(id);
+            return result;
         }
 
         public Task<IEnumerable<GameDto>> GetAllAsync()
