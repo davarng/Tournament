@@ -4,9 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Tournament.Presentation
+namespace Tournament.Presentation;
+
+public class AssemblyReference
 {
-    public class AssemblyReference
-    {
-    }
 }

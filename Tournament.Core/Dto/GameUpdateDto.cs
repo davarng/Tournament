@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Tournament.Core.Dto;
 
-public class GameUpdateDto
+public record GameUpdateDto
 {
     [Required(ErrorMessage = "Title is required.")]
     [MinLength(2, ErrorMessage = "Title is too short(Min 2 chars).")]

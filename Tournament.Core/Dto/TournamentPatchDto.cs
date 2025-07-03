@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Tournament.Core.Dto;
 
-public class TournamentPatchDto
+public record TournamentPatchDto
 {
     public string? Title { get; set; }
     public DateTime? StartDate { get; set; }

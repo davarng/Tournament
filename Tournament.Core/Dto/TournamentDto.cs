@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Tournament.Core.Dto;
 
-public class TournamentDto
+public record TournamentDto
 {
     public int Id { get; set; }
     [Required(ErrorMessage = "Title is required.")]
