@@ -49,7 +49,7 @@ public class TournamentService(IMapper mapper, IUnitOfWork unitOfWork) : ITourna
 
     public async Task<TournamentDto?> GetByIdAsync(int id, bool includeGames = false)
     {
-        var tournament = await unitOfWork.TournamentRepository.GetAsync(id);
+        var tournament = await unitOfWork.TournamentRepository.GetAsync(id, includeGames);
         return tournament is null ? null : mapper.Map<TournamentDto>(tournament);
     }
 
