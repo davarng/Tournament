@@ -41,29 +41,51 @@ namespace Tournament.Services
             return result;
         }
 
-        public Task<IEnumerable<GameDto>> GetAllAsync()
+        public async Task<IEnumerable<GameDto>> GetAllAsync()
         {
-            throw new NotImplementedException();
+            var games = await unitOfWork.GameRepository.GetAllAsync();
+            return mapper.Map<IEnumerable<GameDto>>(games);
         }
 
-        public Task<GameDto?> GetByIdAsync(int id)
+        public async Task<GameDto?> GetByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            var game = await unitOfWork.GameRepository.GetAsync(id);
+            return game is null ? null : mapper.Map<GameDto>(game);
         }
 
-        public Task<GameDto?> GetByTitleAsync(string title)
+        public async Task<GameDto?> GetByTitleAsync(string title)
         {
-            throw new NotImplementedException();
+            var game = await unitOfWork.GameRepository.GetTitleAsync(title);
+            return game is null ? null : mapper.Map<GameDto>(game);
         }
 
-        public Task<bool> PatchAsync(int id, JsonPatchDocument<GamePatchDto> patchDoc)
+        public async Task<bool> PatchAsync(int id, JsonPatchDocument<GamePatchDto> patchDoc)
         {
-            throw new NotImplementedException();
+            var game = await unitOfWork.GameRepository.GetAsync(id);
+            if (game == null)
+                return false;
+
+            var gameToPatch = mapper.Map<GamePatchDto>(game);
+            patchDoc.ApplyTo(gameToPatch);
+
+            var updatedGame = mapper.Map<Game>(gameToPatch);
+            unitOfWork.GameRepository.Update(updatedGame);
+
+            await unitOfWork.CompleteAsync();
+            return true;
         }
 
-        public Task<bool> UpdateAsync(int id, GameUpdateDto dto)
+        public async Task<bool> UpdateAsync(int id, GameUpdateDto dto)
         {
-            throw new NotImplementedException();
+            var game = await unitOfWork.GameRepository.GetAsync(id);
+            if (game == null)
+                return false;
+
+            mapper.Map(dto, game);
+            unitOfWork.GameRepository.Update(game);
+
+            await unitOfWork.CompleteAsync();
+            return true;
         }
     }
 }
