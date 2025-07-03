@@ -7,15 +7,20 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Tournament.Core.Dto;
+using Tournament.Core.Entities;
 using Tournament.Core.Repositories;
 
 namespace Tournament.Services
 {
     public class GameService(IMapper mapper, IUnitOfWork unitOfWork) : IGameService
     {
-        public Task<GameDto> CreateAsync(GameCreateDto dto)
+        public async Task<GameDto> CreateAsync(GameCreateDto dto)
         {
-            throw new NotImplementedException();
+            var game = mapper.Map<Game>(dto);
+            unitOfWork.GameRepository.Add(game);
+
+            await unitOfWork.CompleteAsync();
+            return mapper.Map<GameDto>(game);
         }
 
         public Task<bool> DeleteAsync(int id)
