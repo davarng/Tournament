@@ -22,9 +22,9 @@ public class TournamentRepository(TournamentContext context) : ITournamentReposi
         return await context.TournamentDetails.AnyAsync(t => t.Id == id);
     }
 
-    public async Task<IEnumerable<TournamentDetails>> GetAllAsync()
+    public async Task<IEnumerable<TournamentDetails>> GetAllAsync(int page, int pageSize)
     {
-        return await context.TournamentDetails.ToListAsync();
+        return await context.TournamentDetails.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
     }
 
     public async Task<TournamentDetails?> GetAsync(int id, bool includeGames = false)

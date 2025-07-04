@@ -21,9 +21,10 @@ namespace Tournament.Presentation.Controllers;
 public class TournamentDetailsController(IServiceManager serviceManager) : ControllerBase
 {
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<TournamentDto>>> GetAllTournamentDetails()
+    public async Task<ActionResult<IEnumerable<TournamentDto>>> GetAllTournamentDetails([FromQuery] int page = 1, [FromQuery] int pageSize = 20)
     {
-        var tournaments = await serviceManager.TournamentService.GetAllAsync();
+        pageSize = Math.Min(pageSize, 100);
+        var tournaments = await serviceManager.TournamentService.GetAllAsync(page, pageSize);
         return Ok(tournaments);
     }
 

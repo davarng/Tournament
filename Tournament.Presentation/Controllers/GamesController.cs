@@ -20,9 +20,10 @@ namespace Tournament.Presentation.Controllers;
 public class GamesController(IServiceManager serviceManager) : ControllerBase
 {
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<GameDto>>> GetGame()
+    public async Task<ActionResult<IEnumerable<GameDto>>> GetGames([FromQuery] int page, [FromQuery] int pageSize)
     {
-        var games = await serviceManager.GameService.GetAllAsync();
+        pageSize = Math.Min(pageSize, 100);
+        var games = await serviceManager.GameService.GetAllAsync(page, pageSize);
 
         return Ok(games);
     }

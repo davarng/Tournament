@@ -27,9 +27,9 @@ public class GameRepository(TournamentContext context) : IGameRepository
         return await context.Games.AnyAsync(g => g.Id == id);
     }
 
-    public async Task<IEnumerable<Game>> GetAllAsync()
+    public async Task<IEnumerable<Game>> GetAllAsync(int page, int pageSize)
     {
-        return await context.Games.ToListAsync();
+        return await context.Games.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
     }
 
     public async Task<Game?> GetAsync(int id)

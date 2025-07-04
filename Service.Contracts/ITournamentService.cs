@@ -10,7 +10,7 @@ namespace Service.Contracts;
 
 public interface ITournamentService
 {
-    Task<IEnumerable<TournamentDto>> GetAllAsync();
+    Task<IEnumerable<TournamentDto>> GetAllAsync(int page, int pageSize);
     Task<TournamentDto?> GetByIdAsync(int id, bool includeGames = false);
     Task<bool> ExistsAsync(int id);
     Task<bool> PatchAsync(int id, JsonPatchDocument<TournamentPatchDto> patchDoc);

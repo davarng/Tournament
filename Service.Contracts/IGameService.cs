@@ -10,7 +10,7 @@ namespace Service.Contracts;
 
 public interface IGameService
 {
-    Task<IEnumerable<GameDto>> GetAllAsync();
+    Task<IEnumerable<GameDto>> GetAllAsync(int page, int pageSize);
     Task<GameDto?> GetByIdAsync(int id);
     Task<GameDto?> GetByTitleAsync(string title);
     Task<bool> ExistsAsync(int id);

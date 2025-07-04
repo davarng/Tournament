@@ -41,9 +41,9 @@ public class TournamentService(IMapper mapper, IUnitOfWork unitOfWork) : ITourna
         return result;
     }
 
-    public async Task<IEnumerable<TournamentDto>> GetAllAsync()
+    public async Task<IEnumerable<TournamentDto>> GetAllAsync(int page, int pageSize)
     {
-        var tournament = await unitOfWork.TournamentRepository.GetAllAsync();
+        var tournament = await unitOfWork.TournamentRepository.GetAllAsync(page, pageSize);
         return mapper.Map<IEnumerable<TournamentDto>>(tournament);
     }
 
