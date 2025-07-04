@@ -36,7 +36,7 @@ public class TournamentDetailsController(IServiceManager serviceManager) : Contr
                 totalPages,
                 pageSize,
                 currentPage = page,
-                totalCount
+                totalItems = totalCount
             }
         });
     }

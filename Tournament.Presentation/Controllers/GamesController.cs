@@ -39,7 +39,7 @@ public class GamesController(IServiceManager serviceManager) : ControllerBase
                 totalPages,
                 pageSize,
                 currentPage = page,
-                totalCount
+                totalItems = totalCount
             }
         });
     }
