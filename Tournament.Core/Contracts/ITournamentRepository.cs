@@ -15,4 +15,5 @@ public interface ITournamentRepository
     void Add(TournamentDetails tournament);
     void Update(TournamentDetails tournament);
     void Remove(TournamentDetails tournament);
+    Task<int> GetTotalCountAsync();
 }

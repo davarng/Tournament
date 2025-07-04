@@ -7,6 +7,7 @@ using Service.Contracts;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata.Ecma335;
 using System.Threading.Tasks;
 using Tournament.Core.Dto;
 using Tournament.Core.Entities;
@@ -23,9 +24,21 @@ public class TournamentDetailsController(IServiceManager serviceManager) : Contr
     [HttpGet]
     public async Task<ActionResult<IEnumerable<TournamentDto>>> GetAllTournamentDetails([FromQuery] int page = 1, [FromQuery] int pageSize = 20)
     {
-        pageSize = Math.Min(pageSize, 100);
         var tournaments = await serviceManager.TournamentService.GetAllAsync(page, pageSize);
-        return Ok(tournaments);
+        var totalCount = await serviceManager.TournamentService.GetTotalCountAsync();
+        var totalPages = (int)Math.Ceiling((double)totalCount / pageSize);
+
+        return Ok(new
+        {
+            data = tournaments,
+            metaData = new
+            {
+                totalPages,
+                pageSize,
+                currentPage = page,
+                totalCount
+            }
+        });
     }
 
     [HttpGet("{id}")]

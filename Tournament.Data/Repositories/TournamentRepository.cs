@@ -39,6 +39,11 @@ public class TournamentRepository(TournamentContext context) : ITournamentReposi
         return await query.FirstOrDefaultAsync(t => t.Id == id);
     }
 
+    public async Task<int> GetTotalCountAsync()
+    {
+        return await context.TournamentDetails.CountAsync();
+    }
+
     public void Remove(TournamentDetails tournament)
     {
         context.TournamentDetails.Remove(tournament);

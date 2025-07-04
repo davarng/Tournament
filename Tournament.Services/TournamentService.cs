@@ -53,6 +53,11 @@ public class TournamentService(IMapper mapper, IUnitOfWork unitOfWork) : ITourna
         return tournament is null ? null : mapper.Map<TournamentDto>(tournament);
     }
 
+    public async Task<int> GetTotalCountAsync()
+    {
+        return await unitOfWork.TournamentRepository.GetTotalCountAsync();
+    }
+
     public async Task<bool> PatchAsync(int id, JsonPatchDocument<TournamentPatchDto> patchDoc)
     {
         var tournament = await unitOfWork.TournamentRepository.GetAsync(id);

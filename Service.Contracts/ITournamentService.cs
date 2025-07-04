@@ -17,4 +17,5 @@ public interface ITournamentService
     Task<TournamentDto> CreateAsync(TournamentCreateDto dto);
     Task<bool> UpdateAsync(int id, TournamentUpdateDto dto);
     Task<bool> DeleteAsync(int id);
+    Task<int> GetTotalCountAsync();
 }

@@ -23,6 +23,8 @@ public class GamesController(IServiceManager serviceManager) : ControllerBase
     [HttpGet]
     public async Task<ActionResult<IEnumerable<GameDto>>> GetGames([FromQuery] int page, [FromQuery] int pageSize)
     {
+        pageSize = Math.Min(pageSize, 100);
+
         var games = await serviceManager.GameService.GetAllAsync(page, pageSize);
 
         var totalCount = await serviceManager.GameService.GetTotalCountAsync();
@@ -32,7 +34,7 @@ public class GamesController(IServiceManager serviceManager) : ControllerBase
         return Ok(new
         {
             data = games,
-            pagination = new
+            metaData = new
             {
                 totalPages,
                 pageSize,
