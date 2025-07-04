@@ -18,4 +18,5 @@ public interface IGameService
     Task<bool> PatchAsync(int id, JsonPatchDocument<GamePatchDto> patchDoc);
     Task<bool> UpdateAsync(int id, GameUpdateDto dto);
     Task<bool> DeleteAsync(int id);
+    Task<int> GetTotalCountAsync();
 }

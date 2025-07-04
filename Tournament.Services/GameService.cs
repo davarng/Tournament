@@ -43,6 +43,7 @@ public class GameService(IMapper mapper, IUnitOfWork unitOfWork) : IGameService
 
     public async Task<IEnumerable<GameDto>> GetAllAsync(int page, int pageSize)
     {
+        pageSize = Math.Min(pageSize, 100);
         var games = await unitOfWork.GameRepository.GetAllAsync(page, pageSize);
         return mapper.Map<IEnumerable<GameDto>>(games);
     }
@@ -57,6 +58,11 @@ public class GameService(IMapper mapper, IUnitOfWork unitOfWork) : IGameService
     {
         var game = await unitOfWork.GameRepository.GetTitleAsync(title);
         return game is null ? null : mapper.Map<GameDto>(game);
+    }
+
+    public async Task<int> GetTotalCountAsync()
+    {
+        return await unitOfWork.GameRepository.GetTotalCountAsync();
     }
 
     public async Task<bool> PatchAsync(int id, JsonPatchDocument<GamePatchDto> patchDoc)
@@ -87,4 +93,6 @@ public class GameService(IMapper mapper, IUnitOfWork unitOfWork) : IGameService
         await unitOfWork.CompleteAsync();
         return true;
     }
+
+
 }

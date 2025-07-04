@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using Service.Contracts;
 using System;
@@ -22,10 +23,23 @@ public class GamesController(IServiceManager serviceManager) : ControllerBase
     [HttpGet]
     public async Task<ActionResult<IEnumerable<GameDto>>> GetGames([FromQuery] int page, [FromQuery] int pageSize)
     {
-        pageSize = Math.Min(pageSize, 100);
         var games = await serviceManager.GameService.GetAllAsync(page, pageSize);
 
-        return Ok(games);
+        var totalCount = await serviceManager.GameService.GetTotalCountAsync();
+
+        var totalPages = (int)Math.Ceiling((double)totalCount / pageSize);
+
+        return Ok(new
+        {
+            data = games,
+            pagination = new
+            {
+                totalPages,
+                pageSize,
+                currentPage = page,
+                totalCount
+            }
+        });
     }
 
     [HttpGet("{title}")]

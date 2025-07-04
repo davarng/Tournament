@@ -46,4 +46,9 @@ public class GameRepository(TournamentContext context) : IGameRepository
     {
         context.Entry(game).State = EntityState.Modified;
     }
+
+    public async Task<int> GetTotalCountAsync()
+    {
+        return await context.Games.CountAsync();
+    }
 }
