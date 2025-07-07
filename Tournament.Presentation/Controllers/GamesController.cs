@@ -82,7 +82,12 @@ public class GamesController(IServiceManager serviceManager) : ControllerBase
         }
         catch (InvalidOperationException ex)
         {
-            return BadRequest(ex.Message);
+            Response.ContentType = "application/json";
+            return Problem(
+                title: "Invalid Operation",
+                detail: ex.Message,
+                statusCode: StatusCodes.Status400BadRequest
+                );
         }
     }
 
