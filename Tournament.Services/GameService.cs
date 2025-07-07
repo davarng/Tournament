@@ -16,6 +16,11 @@ public class GameService(IMapper mapper, IUnitOfWork unitOfWork) : IGameService
 {
     public async Task<GameDto> CreateAsync(GameCreateDto dto)
     {
+        var lessThanTenGames = await unitOfWork.TournamentRepository.NumberOfGamesAsync(dto.TournamentId);
+
+        if (!lessThanTenGames)
+            throw new InvalidOperationException("Cannot add more than 10 games to a tournament.");
+
         var game = mapper.Map<Game>(dto);
         unitOfWork.GameRepository.Add(game);
 

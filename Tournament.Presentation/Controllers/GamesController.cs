@@ -34,12 +34,12 @@ public class GamesController(IServiceManager serviceManager) : ControllerBase
         return Ok(new
         {
             data = games,
-            metaData = new
+            pagination = new
             {
                 totalPages,
                 pageSize,
                 currentPage = page,
-                totalItems = totalCount
+                totalCount
             }
         });
     }
@@ -75,12 +75,15 @@ public class GamesController(IServiceManager serviceManager) : ControllerBase
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
 
-        var dto = await serviceManager.GameService.CreateAsync(gameDto);
-
-        if (dto == null)
-            return BadRequest("Failed to create game.");
-
-        return CreatedAtAction(nameof(GetGame), new { title = dto.Title }, dto);
+        try
+        {
+            var dto = await serviceManager.GameService.CreateAsync(gameDto);
+            return CreatedAtAction(nameof(GetGame), new { id = dto.Id }, dto);
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(ex.Message);
+        }
     }
 
     [HttpDelete("{id}")]
