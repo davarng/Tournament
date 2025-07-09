@@ -34,7 +34,7 @@ public class GameService(IMapper mapper, IUnitOfWork unitOfWork) : IGameService
         if (game == null)
             return false;
 
-        unitOfWork.GameRepository.Remove(game);
+        unitOfWork.GameRepository.RemoveGame(game);
 
         await unitOfWork.CompleteAsync();
         return true;
@@ -79,7 +79,7 @@ public class GameService(IMapper mapper, IUnitOfWork unitOfWork) : IGameService
         patchDoc.ApplyTo(gameToPatch);
 
         var updatedGame = mapper.Map<Game>(gameToPatch);
-        unitOfWork.GameRepository.Update(updatedGame);
+        unitOfWork.GameRepository.UpdateGame(updatedGame);
 
         await unitOfWork.CompleteAsync();
         return true;
@@ -92,7 +92,7 @@ public class GameService(IMapper mapper, IUnitOfWork unitOfWork) : IGameService
             return false;
 
         mapper.Map(dto, game);
-        unitOfWork.GameRepository.Update(game);
+        unitOfWork.GameRepository.UpdateGame(game);
 
         await unitOfWork.CompleteAsync();
         return true;

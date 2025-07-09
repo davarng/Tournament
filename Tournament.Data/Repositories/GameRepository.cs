@@ -6,49 +6,56 @@ using System.Text;
 using System.Threading.Tasks;
 using Tournament.Core.Contracts;
 using Tournament.Core.Entities;
+using Tournament.Core.Requests;
 using Tournament.Data.Data;
 
 namespace Tournament.Data.Repositories;
 
-public class GameRepository(TournamentContext context) : IGameRepository
+public class GameRepository : RepositoryBase<Game>, IGameRepository
 {
+    public GameRepository(TournamentContext context) : base(context)
+    {
+
+    }
+
     public async Task<Game?> GetTitleAsync(string title)
     {
-        return await context.Games
+        return await Context.Games
             .FirstOrDefaultAsync(g => g.Title == title);
     }
     public void Add(Game game)
     {
-        context.Games.Add(game);
+        Context.Games.Add(game);
     }
 
     public async Task<bool> AnyAsync(int id)
     {
-        return await context.Games.AnyAsync(g => g.Id == id);
+        return await Context.Games.AnyAsync(g => g.Id == id);
     }
 
-    public async Task<IEnumerable<Game>> GetAllAsync(int page, int pageSize)
+    public async Task<PagedList<Game>> GetAllAsync(RequestParams requestParams, bool trackChanges = false)
     {
-        return await context.Games.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
+        var games = FindAll(trackChanges);
+        return await PagedList<Game>.CreateAsync(games, requestParams.PageNumber, requestParams.PageSize);
     }
 
     public async Task<Game?> GetAsync(int id)
     {
-        return await context.Games.FindAsync(id);
+        return await Context.Games.FindAsync(id);
     }
 
-    public void Remove(Game game)
+    public void RemoveGame(Game game)
     {
-        context.Games.Remove(game);
+        Context.Games.Remove(game);
     }
 
-    public void Update(Game game)
+    public void UpdateGame(Game game)
     {
-        context.Entry(game).State = EntityState.Modified;
+        Context.Entry(game).State = EntityState.Modified;
     }
 
     public async Task<int> GetTotalCountAsync()
     {
-        return await context.Games.CountAsync();
+        return await Context.Games.CountAsync();
     }
 }
