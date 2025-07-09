@@ -63,12 +63,12 @@ public class TournamentRepository : RepositoryBase<TournamentDetails>, ITourname
         return count < 10;
     }
 
-    public void Remove(TournamentDetails tournament)
+    public void RemoveTournament(TournamentDetails tournament)
     {
         Context.TournamentDetails.Remove(tournament);
     }
 
-    public void Update(TournamentDetails tournament)
+    public void UpdateTournament(TournamentDetails tournament)
     {
         Context.Entry(tournament).State = EntityState.Modified;
     }

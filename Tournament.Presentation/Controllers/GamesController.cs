@@ -11,7 +11,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Tournament.Core.Dto;
 using Tournament.Core.Entities;
-using Tournament.Core.Repositories;
+using Tournament.Core.Contracts;
 using Tournament.Data.Data;
 
 namespace Tournament.Presentation.Controllers;

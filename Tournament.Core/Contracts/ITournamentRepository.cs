@@ -15,7 +15,7 @@ public interface ITournamentRepository
     Task<bool> AnyAsync(int id);
     Task<bool> NumberOfGamesAsync(int parentId);
     void Add(TournamentDetails tournament);
-    void Update(TournamentDetails tournament);
-    void Remove(TournamentDetails tournament);
+    void UpdateTournament(TournamentDetails tournament);
+    void RemoveTournament(TournamentDetails tournament);
     Task<int> GetTotalCountAsync();
 }

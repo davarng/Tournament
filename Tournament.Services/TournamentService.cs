@@ -29,7 +29,7 @@ public class TournamentService(IMapper mapper, IUnitOfWork unitOfWork) : ITourna
         if (tournament == null)
             return false;
 
-        unitOfWork.TournamentRepository.Remove(tournament);
+        unitOfWork.TournamentRepository.RemoveTournament(tournament);
 
         await unitOfWork.CompleteAsync();
         return true;
@@ -68,7 +68,7 @@ public class TournamentService(IMapper mapper, IUnitOfWork unitOfWork) : ITourna
         patchDoc.ApplyTo(tournamentToPatch);
 
         var updatedTournament = mapper.Map<TournamentDetails>(tournamentToPatch);
-        unitOfWork.TournamentRepository.Update(updatedTournament);
+        unitOfWork.TournamentRepository.UpdateTournament(updatedTournament);
 
         await unitOfWork.CompleteAsync();
         return true;
@@ -81,7 +81,7 @@ public class TournamentService(IMapper mapper, IUnitOfWork unitOfWork) : ITourna
             return false;
 
         mapper.Map(dto, tournament);
-        unitOfWork.TournamentRepository.Update(tournament);
+        unitOfWork.TournamentRepository.UpdateTournament(tournament);
 
         await unitOfWork.CompleteAsync();
         return true;
