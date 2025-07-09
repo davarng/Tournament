@@ -45,7 +45,7 @@ public class TournamentService(IMapper mapper, IUnitOfWork unitOfWork) : ITourna
     public async Task<(IEnumerable<TournamentDto> tournamentDtos, MetaData metaData)> GetAllAsync(TournamentRequestParams requestParams, bool trackChanges = false)
     {
         var pagedList = await unitOfWork.TournamentRepository.GetAllAsync(requestParams, trackChanges);
-        var tournamentDtos = mapper.Map<IEnumerable<TournamentDto>>(pagedList);
+        var tournamentDtos = mapper.Map<IEnumerable<TournamentDto>>(pagedList.Items);
 
         return (tournamentDtos, pagedList.MetaData);
     }

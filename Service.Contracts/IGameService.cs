@@ -5,12 +5,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Tournament.Core.Dto;
+using Tournament.Core.Requests;
 
 namespace Service.Contracts;
 
 public interface IGameService
 {
-    Task<IEnumerable<GameDto>> GetAllAsync(int page, int pageSize);
+    Task<(IEnumerable<GameDto> gameDtos, MetaData metaData)> GetAllAsync(RequestParams requestParams, bool trackChanges = false);
     Task<GameDto?> GetByIdAsync(int id);
     Task<GameDto?> GetByTitleAsync(string title);
     Task<bool> ExistsAsync(int id);
