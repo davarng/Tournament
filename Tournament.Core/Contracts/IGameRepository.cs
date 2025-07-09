@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Tournament.Core.Entities;
 
-namespace Tournament.Core.Repositories;
+namespace Tournament.Core.Contracts;
 
 public interface IGameRepository
 {

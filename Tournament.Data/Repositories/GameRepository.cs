@@ -4,8 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Tournament.Core.Contracts;
 using Tournament.Core.Entities;
-using Tournament.Core.Repositories;
 using Tournament.Data.Data;
 
 namespace Tournament.Data.Repositories;

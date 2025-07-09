@@ -4,32 +4,42 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Tournament.Core.Contracts;
 using Tournament.Core.Entities;
-using Tournament.Core.Repositories;
+using Tournament.Core.Requests;
 using Tournament.Data.Data;
 
 namespace Tournament.Data.Repositories;
 
-public class TournamentRepository(TournamentContext context) : ITournamentRepository
+public class TournamentRepository : RepositoryBase<TournamentDetails>, ITournamentRepository
 {
+    public TournamentRepository(TournamentContext context) : base(context)
+    {
+
+    }
+
     public void Add(TournamentDetails tournament)
     {
-        context.TournamentDetails.Add(tournament);
+        Context.TournamentDetails.Add(tournament);
     }
 
     public async Task<bool> AnyAsync(int id)
     {
-        return await context.TournamentDetails.AnyAsync(t => t.Id == id);
+        return await Context.TournamentDetails.AnyAsync(t => t.Id == id);
     }
 
-    public async Task<IEnumerable<TournamentDetails>> GetAllAsync(int page, int pageSize)
+    public async Task<PagedList<TournamentDetails>> GetAllAsync(TournamentRequestParams requestParams, bool trackChanges = false)
     {
-        return await context.TournamentDetails.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
+        var tournaments = requestParams.IncludeGames ? FindAll(trackChanges).Include(t => t.Games)
+                                                     : FindAll(trackChanges);
+
+        return await PagedList<TournamentDetails>
+            .CreateAsync(tournaments, requestParams.PageNumber, requestParams.PageSize);
     }
 
     public async Task<TournamentDetails?> GetAsync(int id, bool includeGames = false)
     {
-        IQueryable<TournamentDetails> query = context.TournamentDetails;
+        IQueryable<TournamentDetails> query = Context.TournamentDetails;
 
         if (includeGames)
         {
@@ -41,12 +51,12 @@ public class TournamentRepository(TournamentContext context) : ITournamentReposi
 
     public async Task<int> GetTotalCountAsync()
     {
-        return await context.TournamentDetails.CountAsync();
+        return await Context.TournamentDetails.CountAsync();
     }
 
     public async Task<bool> NumberOfGamesAsync(int id)
     {
-        var count = await context.Games
+        var count = await Context.Games
         .Where(g => g.TournamentId == id)
         .CountAsync();
 
@@ -55,11 +65,11 @@ public class TournamentRepository(TournamentContext context) : ITournamentReposi
 
     public void Remove(TournamentDetails tournament)
     {
-        context.TournamentDetails.Remove(tournament);
+        Context.TournamentDetails.Remove(tournament);
     }
 
     public void Update(TournamentDetails tournament)
     {
-        context.Entry(tournament).State = EntityState.Modified;
+        Context.Entry(tournament).State = EntityState.Modified;
     }
 }

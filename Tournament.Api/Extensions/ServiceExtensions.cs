@@ -1,5 +1,5 @@
 ﻿using Service.Contracts;
-using Tournament.Core.Repositories;
+using Tournament.Core.Contracts;
 using Tournament.Data.Repositories;
 using Tournament.Services;
 
