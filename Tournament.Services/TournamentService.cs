@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using Tournament.Core.Contracts;
 using Tournament.Core.Dto;
 using Tournament.Core.Entities;
+using Tournament.Core.Requests;
 
 namespace Tournament.Services;
 
@@ -41,10 +42,12 @@ public class TournamentService(IMapper mapper, IUnitOfWork unitOfWork) : ITourna
         return result;
     }
 
-    public async Task<IEnumerable<TournamentDto>> GetAllAsync(int page, int pageSize)
+    public async Task<(IEnumerable<TournamentDto> tournamentDtos, MetaData metaData)> GetAllAsync(TournamentRequestParams requestParams, bool trackChanges = false)
     {
-        var tournament = await unitOfWork.TournamentRepository.GetAllAsync(page, pageSize);
-        return mapper.Map<IEnumerable<TournamentDto>>(tournament);
+        var pagedList = await unitOfWork.TournamentRepository.GetAllAsync(requestParams, trackChanges);
+        var tournamentDtos = mapper.Map<IEnumerable<TournamentDto>>(pagedList);
+
+        return (tournamentDtos, pagedList.MetaData);
     }
 
     public async Task<TournamentDto?> GetByIdAsync(int id, bool includeGames = false)
