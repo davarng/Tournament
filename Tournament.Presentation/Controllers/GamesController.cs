@@ -13,6 +13,8 @@ using Tournament.Core.Dto;
 using Tournament.Core.Entities;
 using Tournament.Core.Contracts;
 using Tournament.Data.Data;
+using Tournament.Core.Requests;
+using System.Text.Json;
 
 namespace Tournament.Presentation.Controllers;
 
@@ -21,27 +23,12 @@ namespace Tournament.Presentation.Controllers;
 public class GamesController(IServiceManager serviceManager) : ControllerBase
 {
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<GameDto>>> GetGames([FromQuery] int page, [FromQuery] int pageSize)
+    public async Task<ActionResult<IEnumerable<GameDto>>> GetGames([FromQuery] RequestParams requestParam)
     {
-        pageSize = Math.Min(pageSize, 100);
+        var pagedResult = await serviceManager.GameService.GetAllAsync(requestParam);
+        Response.Headers.Append("X-Pagination", JsonSerializer.Serialize(pagedResult.metaData));
 
-        var games = await serviceManager.GameService.GetAllAsync(page, pageSize);
-
-        var totalCount = await serviceManager.GameService.GetTotalCountAsync();
-
-        var totalPages = (int)Math.Ceiling((double)totalCount / pageSize);
-
-        return Ok(new
-        {
-            data = games,
-            pagination = new
-            {
-                totalPages,
-                pageSize,
-                currentPage = page,
-                totalCount
-            }
-        });
+        return Ok(pagedResult.gameDtos);
     }
 
     [HttpGet("{title}")]
