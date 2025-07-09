@@ -23,10 +23,6 @@ public class GameRepository : RepositoryBase<Game>, IGameRepository
         return await Context.Games
             .FirstOrDefaultAsync(g => g.Title == title);
     }
-    public void Add(Game game)
-    {
-        Context.Games.Add(game);
-    }
 
     public async Task<bool> AnyAsync(int id)
     {
@@ -42,16 +38,6 @@ public class GameRepository : RepositoryBase<Game>, IGameRepository
     public async Task<Game?> GetAsync(int id)
     {
         return await Context.Games.FindAsync(id);
-    }
-
-    public void RemoveGame(Game game)
-    {
-        Context.Games.Remove(game);
-    }
-
-    public void UpdateGame(Game game)
-    {
-        Context.Entry(game).State = EntityState.Modified;
     }
 
     public async Task<int> GetTotalCountAsync()

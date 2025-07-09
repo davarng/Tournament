@@ -23,7 +23,7 @@ public class GameService(IMapper mapper, IUnitOfWork unitOfWork) : IGameService
             throw new InvalidOperationException("Cannot add more than 10 games to a tournament.");
 
         var game = mapper.Map<Game>(dto);
-        unitOfWork.GameRepository.Add(game);
+        unitOfWork.GameRepository.Create(game);
 
         await unitOfWork.CompleteAsync();
         return mapper.Map<GameDto>(game);
@@ -35,7 +35,7 @@ public class GameService(IMapper mapper, IUnitOfWork unitOfWork) : IGameService
         if (game == null)
             return false;
 
-        unitOfWork.GameRepository.RemoveGame(game);
+        unitOfWork.GameRepository.Delete(game);
 
         await unitOfWork.CompleteAsync();
         return true;
@@ -82,7 +82,7 @@ public class GameService(IMapper mapper, IUnitOfWork unitOfWork) : IGameService
         patchDoc.ApplyTo(gameToPatch);
 
         var updatedGame = mapper.Map<Game>(gameToPatch);
-        unitOfWork.GameRepository.UpdateGame(updatedGame);
+        unitOfWork.GameRepository.Update(updatedGame);
 
         await unitOfWork.CompleteAsync();
         return true;
@@ -95,7 +95,7 @@ public class GameService(IMapper mapper, IUnitOfWork unitOfWork) : IGameService
             return false;
 
         mapper.Map(dto, game);
-        unitOfWork.GameRepository.UpdateGame(game);
+        unitOfWork.GameRepository.Update(game);
 
         await unitOfWork.CompleteAsync();
         return true;

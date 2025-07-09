@@ -14,8 +14,8 @@ public interface IGameRepository
     Task<Game?> GetAsync(int id);
     Task<bool> AnyAsync(int id);
     Task<Game?> GetTitleAsync(string title);
-    void Add(Game game);
-    void UpdateGame(Game game);
-    void RemoveGame(Game game);
+    void Create(Game game);
+    void Update(Game game);
+    void Delete(Game game);
     Task<int> GetTotalCountAsync();
 }
