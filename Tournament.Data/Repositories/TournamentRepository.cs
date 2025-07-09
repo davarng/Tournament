@@ -18,11 +18,6 @@ public class TournamentRepository : RepositoryBase<TournamentDetails>, ITourname
 
     }
 
-    public void Add(TournamentDetails tournament)
-    {
-        Context.TournamentDetails.Add(tournament);
-    }
-
     public async Task<bool> AnyAsync(int id)
     {
         return await Context.TournamentDetails.AnyAsync(t => t.Id == id);
@@ -61,15 +56,5 @@ public class TournamentRepository : RepositoryBase<TournamentDetails>, ITourname
         .CountAsync();
 
         return count < 10;
-    }
-
-    public void RemoveTournament(TournamentDetails tournament)
-    {
-        Context.TournamentDetails.Remove(tournament);
-    }
-
-    public void UpdateTournament(TournamentDetails tournament)
-    {
-        Context.Entry(tournament).State = EntityState.Modified;
     }
 }

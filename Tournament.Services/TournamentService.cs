@@ -18,7 +18,7 @@ public class TournamentService(IMapper mapper, IUnitOfWork unitOfWork) : ITourna
     public async Task<TournamentDto> CreateAsync(TournamentCreateDto dto)
     {
         var tournament = mapper.Map<TournamentDetails>(dto);
-        unitOfWork.TournamentRepository.Add(tournament);
+        unitOfWork.TournamentRepository.Create(tournament);
 
         await unitOfWork.CompleteAsync();
         return mapper.Map<TournamentDto>(tournament);
@@ -30,7 +30,7 @@ public class TournamentService(IMapper mapper, IUnitOfWork unitOfWork) : ITourna
         if (tournament == null)
             return false;
 
-        unitOfWork.TournamentRepository.RemoveTournament(tournament);
+        unitOfWork.TournamentRepository.Delete(tournament);
 
         await unitOfWork.CompleteAsync();
         return true;
@@ -71,7 +71,7 @@ public class TournamentService(IMapper mapper, IUnitOfWork unitOfWork) : ITourna
         patchDoc.ApplyTo(tournamentToPatch);
 
         var updatedTournament = mapper.Map<TournamentDetails>(tournamentToPatch);
-        unitOfWork.TournamentRepository.UpdateTournament(updatedTournament);
+        unitOfWork.TournamentRepository.Update(updatedTournament);
 
         await unitOfWork.CompleteAsync();
         return true;
@@ -84,7 +84,7 @@ public class TournamentService(IMapper mapper, IUnitOfWork unitOfWork) : ITourna
             return false;
 
         mapper.Map(dto, tournament);
-        unitOfWork.TournamentRepository.UpdateTournament(tournament);
+        unitOfWork.TournamentRepository.Update(tournament);
 
         await unitOfWork.CompleteAsync();
         return true;
