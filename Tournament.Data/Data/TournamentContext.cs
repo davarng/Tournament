@@ -14,8 +14,8 @@ public class TournamentContext : DbContext
     {
     }
 
-    public DbSet<Tournament.Core.Entities.TournamentDetails> TournamentDetails { get; set; } = default!;
-    public DbSet<Tournament.Core.Entities.Game> Games { get; set; } = default!;
+    public DbSet<TournamentDetails> TournamentDetails { get; set; } = default!;
+    public DbSet<Game> Games { get; set; } = default!;
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<TournamentDetails>()
