@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.JsonPatch;
 using Service.Contracts;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,6 +18,12 @@ public class TournamentService(IMapper mapper, IUnitOfWork unitOfWork) : ITourna
 {
     public async Task<TournamentDto> CreateAsync(TournamentCreateDto dto)
     {
+        var validationContext = new ValidationContext(dto);
+        var validationResults = new List<ValidationResult>();
+        bool isValid = Validator.TryValidateObject(dto, validationContext, validationResults, true);
+        if (!isValid)
+            throw new ValidationException("Invalid game data provided.");
+
         var tournament = mapper.Map<TournamentDetails>(dto);
         unitOfWork.TournamentRepository.Create(tournament);
 
@@ -70,6 +77,12 @@ public class TournamentService(IMapper mapper, IUnitOfWork unitOfWork) : ITourna
         var tournamentToPatch = mapper.Map<TournamentPatchDto>(tournament);
         patchDoc.ApplyTo(tournamentToPatch);
 
+        var validationContext = new ValidationContext(tournamentToPatch);
+        var validationResults = new List<ValidationResult>();
+        bool isValid = Validator.TryValidateObject(tournamentToPatch, validationContext, validationResults, true);
+        if (!isValid)
+            return false;
+
         var updatedTournament = mapper.Map<TournamentDetails>(tournamentToPatch);
         unitOfWork.TournamentRepository.Update(updatedTournament);
 
@@ -81,6 +94,12 @@ public class TournamentService(IMapper mapper, IUnitOfWork unitOfWork) : ITourna
     {
         var tournament = await unitOfWork.TournamentRepository.GetAsync(id);
         if (tournament == null)
+            return false;
+
+        var validationContext = new ValidationContext(dto);
+        var validationResults = new List<ValidationResult>();
+        bool isValid = Validator.TryValidateObject(dto, validationContext, validationResults, true);
+        if (!isValid)
             return false;
 
         mapper.Map(dto, tournament);
