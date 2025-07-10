@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.JsonPatch;
 using Service.Contracts;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,6 +18,12 @@ public class GameService(IMapper mapper, IUnitOfWork unitOfWork) : IGameService
 {
     public async Task<GameDto> CreateAsync(GameCreateDto dto)
     {
+        var validationContext = new ValidationContext(dto);
+        var validationResults = new List<ValidationResult>();
+        bool isValid = Validator.TryValidateObject(dto, validationContext, validationResults, true);
+        if (!isValid)
+            throw new ValidationException("Invalid game data provided.");
+
         var lessThanTenGames = await unitOfWork.TournamentRepository.NumberOfGamesAsync(dto.TournamentId);
 
         if (!lessThanTenGames)
@@ -81,6 +88,12 @@ public class GameService(IMapper mapper, IUnitOfWork unitOfWork) : IGameService
         var gameToPatch = mapper.Map<GamePatchDto>(game);
         patchDoc.ApplyTo(gameToPatch);
 
+        var validationContext = new ValidationContext(gameToPatch);
+        var validationResults = new List<ValidationResult>();
+        bool isValid = Validator.TryValidateObject(gameToPatch, validationContext, validationResults, true);
+        if (!isValid)
+            return false;
+
         var updatedGame = mapper.Map<Game>(gameToPatch);
         unitOfWork.GameRepository.Update(updatedGame);
 
@@ -92,6 +105,12 @@ public class GameService(IMapper mapper, IUnitOfWork unitOfWork) : IGameService
     {
         var game = await unitOfWork.GameRepository.GetAsync(id);
         if (game == null)
+            return false;
+
+        var validationContext = new ValidationContext(dto);
+        var validationResults = new List<ValidationResult>();
+        bool isValid = Validator.TryValidateObject(dto, validationContext, validationResults, true);
+        if (!isValid)
             return false;
 
         mapper.Map(dto, game);
