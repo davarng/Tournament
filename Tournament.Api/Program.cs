@@ -16,13 +16,11 @@ public class Program
         builder.Services.AddDbContext<TournamentContext>(options =>
             options.UseSqlServer(builder.Configuration.GetConnectionString("TournamentApiContext") ?? throw new InvalidOperationException("Connection string 'TournamentApiContext' not found.")));
 
-        // Add services to the container.
-
         builder.Services.AddControllers(opt => opt.ReturnHttpNotAcceptable = true)
             .AddNewtonsoftJson()
             .AddXmlDataContractSerializerFormatters()
             .AddApplicationPart(typeof(AssemblyReference).Assembly);
-        // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
         builder.Services.AddAutoMapper(typeof(TournamentMappings));
@@ -34,7 +32,6 @@ public class Program
 
         app.ConfigureExceptionHandler();
 
-        // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())
         {
             app.UseSwagger();
