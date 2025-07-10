@@ -16,11 +16,11 @@ public class TournamentContext : DbContext
 
     public DbSet<TournamentDetails> TournamentDetails { get; set; } = default!;
     public DbSet<Game> Games { get; set; } = default!;
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
-    {
-        modelBuilder.Entity<TournamentDetails>()
-            .HasMany(t => t.Games)
-            .WithOne()
-            .HasForeignKey(g => g.TournamentId);
-    }
+    //protected override void OnModelCreating(ModelBuilder modelBuilder)
+    //{
+    //    modelBuilder.Entity<TournamentDetails>()
+    //        .HasMany(t => t.Games)
+    //        .WithOne()
+    //        .HasForeignKey(g => g.TournamentId);
+    //}
 }
