@@ -6,9 +6,17 @@ using System.Threading.Tasks;
 
 namespace Tournament.Core.Exceptions;
 
-public abstract class NotFoundException : Exception
+public class NotFoundException : Exception
 {
     public string Title { get; set; }
+
+    public static void ThrowIfNull(object value, string name)
+    {
+        if (value == null)
+        {
+            throw new NotFoundException($"{name} is not found", name);
+        }
+    }
 
     protected NotFoundException(string message, string title = "Not found") : base(message)
     {

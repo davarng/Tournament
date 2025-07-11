@@ -23,5 +23,5 @@ public class UnitOfWork : IUnitOfWork
         GameRepository = new GameRepository(context);
     }
 
-    public async Task CompleteAsync() => await _context.SaveChangesAsync();
+    public async Task<bool> CompleteAsync() => await _context.SaveChangesAsync() > 0;
 }
