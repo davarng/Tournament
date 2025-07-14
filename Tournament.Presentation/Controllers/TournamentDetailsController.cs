@@ -28,6 +28,7 @@ public class TournamentDetailsController(IServiceManager serviceManager) : Contr
     /// </summary>
     /// <param name="requestParams">Pagination data.</param>
     /// <returns>200, a list of TournamentDetails from the specified size/page and meta data.</returns>
+    /// <response code ="200">Returns a list of TournamentDetails.</response>
     [HttpGet]
     public async Task<ActionResult<IEnumerable<TournamentDto>>> GetAllTournamentDetails([FromQuery] TournamentRequestParams requestParams)
     {
@@ -43,6 +44,7 @@ public class TournamentDetailsController(IServiceManager serviceManager) : Contr
     /// <param name="id">Id of the TournamentDetails you want to get.</param>
     /// <param name="includeGames">Bool that decides whether the games belonging to TournamentDetails should be included.</param>
     /// <returns>200 and the TournamentDetails. Optionally the games belonging to TournamentDetails.</returns>
+    /// <response code="200">Returns the requested TournamentDetails.</response>
     [HttpGet("{id}")]
     public async Task<ActionResult<TournamentDto>> GetTournamentDetails(int id, bool includeGames = false)
     {
@@ -60,6 +62,7 @@ public class TournamentDetailsController(IServiceManager serviceManager) : Contr
     /// <param name="id">The id of the TournamentDetails you want to update.</param>
     /// <param name="tournamentUpdateDto">Data used to update the TournamentDetails.</param>
     /// <returns>No content if update is successful.</returns>
+    /// <response code ="204">No content if the update is successful.</response>
     [HttpPut("{id}")]
     public async Task<IActionResult> PutTournamentDetails(int id, [FromBody] TournamentUpdateDto tournamentUpdateDto)
     {
@@ -80,6 +83,7 @@ public class TournamentDetailsController(IServiceManager serviceManager) : Contr
     /// </summary>
     /// <param name="tournamentCreateDto">TournamentDetails data used to create the game.</param>
     /// <returns>201 with the created TournamentDetails.</returns>
+    /// <response code ="201">Returns the created TournamentDetails.</response>
     [HttpPost]
     public async Task<ActionResult<TournamentDto>> PostTournamentDetails([FromBody] TournamentCreateDto tournamentCreateDto)
     {
@@ -99,6 +103,7 @@ public class TournamentDetailsController(IServiceManager serviceManager) : Contr
     /// </summary>
     /// <param name="id">Id of the TournamentDetails you want to delete.</param>
     /// <returns>No content if the update is successful</returns>
+    /// <response code ="204">No content if the deletion is successful.</response>
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteTournamentDetails(int id)
     {
@@ -116,6 +121,7 @@ public class TournamentDetailsController(IServiceManager serviceManager) : Contr
     /// <param name="id">Id of TournamentDetails you want to update.</param>
     /// <param name="patchDoc">The patch document that is used to change the values of TournamentDetails.</param>
     /// <returns>No content if the update is successful.</returns>
+    /// <response code ="204">No content if the patch is successful.</response>
     [HttpPatch("{id}")]
     public async Task<IActionResult> PatchTournamentDetails(int id, [FromBody] JsonPatchDocument<TournamentPatchDto> patchDoc)
     {
