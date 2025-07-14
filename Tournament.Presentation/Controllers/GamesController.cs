@@ -22,6 +22,11 @@ namespace Tournament.Presentation.Controllers;
 [ApiController]
 public class GamesController(IServiceManager serviceManager) : ControllerBase
 {
+    /// <summary>
+    /// Gets all games with pagination support.
+    /// </summary>
+    /// <param name="requestParam">Data needed for pagination.</param>
+    /// <returns>200, a list of games from the specified size/page and meta data.</returns>
     [HttpGet]
     public async Task<ActionResult<IEnumerable<GameDto>>> GetGames([FromQuery] RequestParams requestParam)
     {
@@ -31,6 +36,11 @@ public class GamesController(IServiceManager serviceManager) : ControllerBase
         return Ok(pagedResult.gameDtos);
     }
 
+    /// <summary>
+    /// Gets the game with the specified title.
+    /// </summary>
+    /// <param name="title">Title of game that you want to get.</param>
+    /// <returns>200 and the games info.</returns>
     [HttpGet("{title}")]
     public async Task<ActionResult<GameDto>> GetGame(string title)
     {
@@ -42,6 +52,12 @@ public class GamesController(IServiceManager serviceManager) : ControllerBase
         return Ok(game);
     }
 
+    /// <summary>
+    /// Updates the game with the specified id using the provided game data.
+    /// </summary>
+    /// <param name="id">The id of the game you want to update.</param>
+    /// <param name="gameDto">Data used to update the game.</param>
+    /// <returns>No content if update is successful.</returns>
     [HttpPut("{id}")]
     public async Task<IActionResult> PutGame(int id, [FromBody] GameUpdateDto gameDto)
     {
@@ -56,6 +72,11 @@ public class GamesController(IServiceManager serviceManager) : ControllerBase
         return NoContent();
     }
 
+    /// <summary>
+    /// Creates a game with the provided details.
+    /// </summary>
+    /// <param name="gameDto">Game data used to create the game.</param>
+    /// <returns>201 with the created game.</returns>
     [HttpPost]
     public async Task<ActionResult<GameDto>> PostGame([FromBody] GameCreateDto gameDto)
     {
@@ -78,6 +99,11 @@ public class GamesController(IServiceManager serviceManager) : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Deletes the game with the specified id.
+    /// </summary>
+    /// <param name="id">Id of the game you want to delete.</param>
+    /// <returns>No content if the update is successful</returns>
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteGame(int id)
     {
@@ -89,6 +115,12 @@ public class GamesController(IServiceManager serviceManager) : ControllerBase
         return NoContent();
     }
 
+    /// <summary>
+    /// Partial update for the game with the specified id using JSON Patch.
+    /// </summary>
+    /// <param name="id">Id of game you want to update.</param>
+    /// <param name="patchDoc">The patch document that is used to change the values of game.</param>
+    /// <returns>No content if the update is successful.</returns>
     [HttpPatch("{id}")]
     public async Task<IActionResult> PatchGame(int id, [FromBody] JsonPatchDocument<GamePatchDto> patchDoc)
     {

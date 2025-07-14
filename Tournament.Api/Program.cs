@@ -1,3 +1,4 @@
+using Asp.Versioning;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection.Metadata;
@@ -27,6 +28,14 @@ public class Program
 
         builder.Services.ConfigureServiceLayerServices();
         builder.Services.ConfigureRepositories();
+
+        builder.Services.AddApiVersioning(setupAction =>
+        {
+            setupAction.ReportApiVersions = true;
+            setupAction.AssumeDefaultVersionWhenUnspecified = true;
+            setupAction.DefaultApiVersion = new ApiVersion(1, 0);
+        }).AddMvc();
+
 
         var app = builder.Build();
 
