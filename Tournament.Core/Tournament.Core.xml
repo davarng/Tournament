@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Tournament.Core</name>
+    </assembly>
+    <members>
+        <member name="T:Tournament.Core.Dto.GameCreateDto">
+            <summary>
+            Dto for creating a game.
+            </summary>
+        </member>
+        <member name="T:Tournament.Core.Dto.GameDto">
+            <summary>
+            Dto for Game entity.
+            </summary>
+        </member>
+        <member name="T:Tournament.Core.Dto.GamePatchDto">
+            <summary>
+            Dto for patching game data.
+            </summary>
+        </member>
+        <member name="T:Tournament.Core.Dto.GameUpdateDto">
+            <summary>
+            Dto for updating a game.
+            </summary>
+        </member>
+        <member name="T:Tournament.Core.Dto.TournamentCreateDto">
+            <summary>
+            Dto for creating a TournamentDetails.
+            </summary>
+        </member>
+        <member name="T:Tournament.Core.Dto.TournamentDto">
+            <summary>
+            Dto for TournamentDetails entity.
+            </summary>
+        </member>
+        <member name="T:Tournament.Core.Dto.TournamentPatchDto">
+            <summary>
+            Dto for patching TournamentDetails.
+            </summary>
+        </member>
+        <member name="T:Tournament.Core.Dto.TournamentUpdateDto">
+            <summary>
+            Dto for updating a tournament.
+            </summary>
+        </member>
+    </members>
+</doc>

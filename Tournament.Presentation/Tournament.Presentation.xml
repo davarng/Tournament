@@ -1,0 +1,109 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Tournament.Presentation</name>
+    </assembly>
+    <members>
+        <member name="M:Tournament.Presentation.Controllers.GamesController.GetGames(Tournament.Core.Requests.RequestParams)">
+            <summary>
+            Gets all games with pagination support.
+            </summary>
+            <param name="requestParam">Data needed for pagination.</param>
+            <returns>200, a list of games from the specified size/page and meta data.</returns>
+            <response code="200">Returns a list of games.</response>
+        </member>
+        <member name="M:Tournament.Presentation.Controllers.GamesController.GetGame(System.String)">
+            <summary>
+            Gets the game with the specified title.
+            </summary>
+            <param name="title">Title of game that you want to get.</param>
+            <returns>200 and the games info.</returns>
+            <response code ="200">Returns the requested game.</response>
+        </member>
+        <member name="M:Tournament.Presentation.Controllers.GamesController.PutGame(System.Int32,Tournament.Core.Dto.GameUpdateDto)">
+            <summary>
+            Updates the game with the specified id using the provided game data.
+            </summary>
+            <param name="id">The id of the game you want to update.</param>
+            <param name="gameDto">Data used to update the game.</param>
+            <returns>No content if update is successful.</returns>
+            <response code="204">No content if the update is successful.</response>
+        </member>
+        <member name="M:Tournament.Presentation.Controllers.GamesController.PostGame(Tournament.Core.Dto.GameCreateDto)">
+            <summary>
+            Creates a game with the provided details.
+            </summary>
+            <param name="gameDto">Game data used to create the game.</param>
+            <returns>201 with the created game.</returns>
+            <response code="201">Returns the created game.</response>
+        </member>
+        <member name="M:Tournament.Presentation.Controllers.GamesController.DeleteGame(System.Int32)">
+            <summary>
+            Deletes the game with the specified id.
+            </summary>
+            <param name="id">Id of the game you want to delete.</param>
+            <returns>No content if the update is successful</returns>
+            <response code="204">No content if the delete is successful.</response>
+        </member>
+        <member name="M:Tournament.Presentation.Controllers.GamesController.PatchGame(System.Int32,Microsoft.AspNetCore.JsonPatch.JsonPatchDocument{Tournament.Core.Dto.GamePatchDto})">
+            <summary>
+            Partial update for the game with the specified id using JSON Patch.
+            </summary>
+            <param name="id">Id of game you want to update.</param>
+            <param name="patchDoc">The patch document that is used to change the values of game.</param>
+            <returns>No content if the update is successful.</returns>
+            <response code ="204">No content if the patch is successful.</response>
+        </member>
+        <member name="M:Tournament.Presentation.Controllers.TournamentDetailsController.GetAllTournamentDetails(Tournament.Core.Requests.TournamentRequestParams)">
+            <summary>
+            Gets all TournamentDetails with pagination support.
+            </summary>
+            <param name="requestParams">Pagination data.</param>
+            <returns>200, a list of TournamentDetails from the specified size/page and meta data.</returns>
+            <response code ="200">Returns a list of TournamentDetails.</response>
+        </member>
+        <member name="M:Tournament.Presentation.Controllers.TournamentDetailsController.GetTournamentDetails(System.Int32,System.Boolean)">
+            <summary>
+            Gets the TournamentDetails with the specified id and optionally includes games.
+            </summary>
+            <param name="id">Id of the TournamentDetails you want to get.</param>
+            <param name="includeGames">Bool that decides whether the games belonging to TournamentDetails should be included.</param>
+            <returns>200 and the TournamentDetails. Optionally the games belonging to TournamentDetails.</returns>
+            <response code="200">Returns the requested TournamentDetails.</response>
+        </member>
+        <member name="M:Tournament.Presentation.Controllers.TournamentDetailsController.PutTournamentDetails(System.Int32,Tournament.Core.Dto.TournamentUpdateDto)">
+            <summary>
+            Updates the TournamentDetails with the specified id using the provided TournamentDetails data.
+            </summary>
+            <param name="id">The id of the TournamentDetails you want to update.</param>
+            <param name="tournamentUpdateDto">Data used to update the TournamentDetails.</param>
+            <returns>No content if update is successful.</returns>
+            <response code ="204">No content if the update is successful.</response>
+        </member>
+        <member name="M:Tournament.Presentation.Controllers.TournamentDetailsController.PostTournamentDetails(Tournament.Core.Dto.TournamentCreateDto)">
+            <summary>
+            Creates a TournamentDetails with the provided details.
+            </summary>
+            <param name="tournamentCreateDto">TournamentDetails data used to create the game.</param>
+            <returns>201 with the created TournamentDetails.</returns>
+            <response code ="201">Returns the created TournamentDetails.</response>
+        </member>
+        <member name="M:Tournament.Presentation.Controllers.TournamentDetailsController.DeleteTournamentDetails(System.Int32)">
+            <summary>
+            Deletes the TournamentDetails with the specified id.
+            </summary>
+            <param name="id">Id of the TournamentDetails you want to delete.</param>
+            <returns>No content if the update is successful</returns>
+            <response code ="204">No content if the deletion is successful.</response>
+        </member>
+        <member name="M:Tournament.Presentation.Controllers.TournamentDetailsController.PatchTournamentDetails(System.Int32,Microsoft.AspNetCore.JsonPatch.JsonPatchDocument{Tournament.Core.Dto.TournamentPatchDto})">
+            <summary>
+            Partial update for the TournamentDetails with the specified id using JSON Patch.
+            </summary>
+            <param name="id">Id of TournamentDetails you want to update.</param>
+            <param name="patchDoc">The patch document that is used to change the values of TournamentDetails.</param>
+            <returns>No content if the update is successful.</returns>
+            <response code ="204">No content if the patch is successful.</response>
+        </member>
+    </members>
+</doc>

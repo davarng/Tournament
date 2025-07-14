@@ -5,7 +5,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
-    <DocumentationFile>Tournament.Api.xml</DocumentationFile>
+    <DocumentationFile>Tournament.Presentation.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>

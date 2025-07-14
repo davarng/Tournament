@@ -26,11 +26,11 @@ public class Program
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen(setupAction =>
         {
-            var xmlCommentsFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+            var xmlCommentsFile = $"{typeof(Tournament.Presentation.AssemblyReference).Assembly.GetName().Name}.xml";
             var xmlCommentsFullPath = Path.Combine(AppContext.BaseDirectory, xmlCommentsFile);
             setupAction.IncludeXmlComments(xmlCommentsFullPath);
 
-            var xmlCommentsFileCore = $"{typeof(Tournament.Core.Entities.TournamentDetails).Assembly.GetName().Name}.xml";
+            var xmlCommentsFileCore = $"{typeof(Tournament.Core.AssemblyReference).Assembly.GetName().Name}.xml";
             var xmlCommentsFullPathCore = Path.Combine(AppContext.BaseDirectory, xmlCommentsFileCore);
             setupAction.IncludeXmlComments(xmlCommentsFullPathCore);
         });
