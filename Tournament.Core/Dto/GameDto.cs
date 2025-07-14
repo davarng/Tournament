@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace Tournament.Core.Dto;
 
+/// <summary>
+/// Dto for Game entity.
+/// </summary>
 public record GameDto
 {
     public int Id { get; set; }

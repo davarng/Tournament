@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace Tournament.Core.Dto;
 
+/// <summary>
+/// Dto for creating a TournamentDetails.
+/// </summary>
 public record TournamentCreateDto
 {
     [Required(ErrorMessage = "Title is required.")]

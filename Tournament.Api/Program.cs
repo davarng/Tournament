@@ -1,6 +1,7 @@
 using Asp.Versioning;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using System.Reflection;
 using System.Reflection.Metadata;
 using Tournament.Api.Extensions;
 using Tournament.Core.Contracts;
@@ -23,7 +24,16 @@ public class Program
             .AddApplicationPart(typeof(AssemblyReference).Assembly);
 
         builder.Services.AddEndpointsApiExplorer();
-        builder.Services.AddSwaggerGen();
+        builder.Services.AddSwaggerGen(setupAction =>
+        {
+            var xmlCommentsFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+            var xmlCommentsFullPath = Path.Combine(AppContext.BaseDirectory, xmlCommentsFile);
+            setupAction.IncludeXmlComments(xmlCommentsFullPath);
+
+            var xmlCommentsFileCore = $"{typeof(Tournament.Core.Entities.TournamentDetails).Assembly.GetName().Name}.xml";
+            var xmlCommentsFullPathCore = Path.Combine(AppContext.BaseDirectory, xmlCommentsFileCore);
+            setupAction.IncludeXmlComments(xmlCommentsFullPathCore);
+        });
         builder.Services.AddAutoMapper(typeof(TournamentMappings));
 
         builder.Services.ConfigureServiceLayerServices();

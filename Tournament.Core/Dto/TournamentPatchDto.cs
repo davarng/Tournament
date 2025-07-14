@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace Tournament.Core.Dto;
 
+/// <summary>
+/// Dto for patching TournamentDetails.
+/// </summary>
 public record TournamentPatchDto
 {
     public string? Title { get; set; }
