@@ -30,6 +30,8 @@ public class TournamentDetailsController(IServiceManager serviceManager) : Contr
     /// <returns>200, a list of TournamentDetails from the specified size/page and meta data.</returns>
     /// <response code ="200">Returns a list of TournamentDetails.</response>
     [HttpGet]
+    [ProducesResponseType(typeof(IEnumerable<TournamentDto>), StatusCodes.Status200OK)]
+    [Produces("application/json")]
     public async Task<ActionResult<IEnumerable<TournamentDto>>> GetAllTournamentDetails([FromQuery] TournamentRequestParams requestParams)
     {
         var pagedResult = await serviceManager.TournamentService.GetAllAsync(requestParams, false);
@@ -46,6 +48,9 @@ public class TournamentDetailsController(IServiceManager serviceManager) : Contr
     /// <returns>200 and the TournamentDetails. Optionally the games belonging to TournamentDetails.</returns>
     /// <response code="200">Returns the requested TournamentDetails.</response>
     [HttpGet("{id}")]
+    [ProducesResponseType(typeof(TournamentDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [Produces("application/json")]
     public async Task<ActionResult<TournamentDto>> GetTournamentDetails(int id, bool includeGames = false)
     {
         var tournament = await serviceManager.TournamentService.GetByIdAsync(id, includeGames);
@@ -64,6 +69,10 @@ public class TournamentDetailsController(IServiceManager serviceManager) : Contr
     /// <returns>No content if update is successful.</returns>
     /// <response code ="204">No content if the update is successful.</response>
     [HttpPut("{id}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [Consumes("application/json")]
     public async Task<IActionResult> PutTournamentDetails(int id, [FromBody] TournamentUpdateDto tournamentUpdateDto)
     {
         if (!ModelState.IsValid)
@@ -85,6 +94,10 @@ public class TournamentDetailsController(IServiceManager serviceManager) : Contr
     /// <returns>201 with the created TournamentDetails.</returns>
     /// <response code ="201">Returns the created TournamentDetails.</response>
     [HttpPost]
+    [ProducesResponseType(typeof(TournamentDto), StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [Produces("application/json")]
+    [Consumes("application/json")]
     public async Task<ActionResult<TournamentDto>> PostTournamentDetails([FromBody] TournamentCreateDto tournamentCreateDto)
     {
         if (!ModelState.IsValid)
@@ -105,6 +118,8 @@ public class TournamentDetailsController(IServiceManager serviceManager) : Contr
     /// <returns>No content if the update is successful</returns>
     /// <response code ="204">No content if the deletion is successful.</response>
     [HttpDelete("{id}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> DeleteTournamentDetails(int id)
     {
         var success = await serviceManager.TournamentService.DeleteAsync(id);
@@ -123,6 +138,10 @@ public class TournamentDetailsController(IServiceManager serviceManager) : Contr
     /// <returns>No content if the update is successful.</returns>
     /// <response code ="204">No content if the patch is successful.</response>
     [HttpPatch("{id}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [Consumes("application/json-patch+json")]
     public async Task<IActionResult> PatchTournamentDetails(int id, [FromBody] JsonPatchDocument<TournamentPatchDto> patchDoc)
     {
         if (patchDoc == null)
