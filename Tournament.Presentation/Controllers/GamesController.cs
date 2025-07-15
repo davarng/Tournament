@@ -29,6 +29,8 @@ public class GamesController(IServiceManager serviceManager) : ControllerBase
     /// <returns>200, a list of games from the specified size/page and meta data.</returns>
     /// <response code="200">Returns a list of games.</response>
     [HttpGet]
+    [ProducesResponseType(typeof(IEnumerable<GameDto>), StatusCodes.Status200OK)]
+    [Produces("application/json")]
     public async Task<ActionResult<IEnumerable<GameDto>>> GetGames([FromQuery] RequestParams requestParam)
     {
         var pagedResult = await serviceManager.GameService.GetAllAsync(requestParam);
@@ -65,6 +67,10 @@ public class GamesController(IServiceManager serviceManager) : ControllerBase
     /// <returns>No content if update is successful.</returns>
     /// <response code="204">No content if the update is successful.</response>
     [HttpPut("{id}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [Consumes("application/json")]
     public async Task<IActionResult> PutGame(int id, [FromBody] GameUpdateDto gameDto)
     {
         if (!ModelState.IsValid)
@@ -85,6 +91,10 @@ public class GamesController(IServiceManager serviceManager) : ControllerBase
     /// <returns>201 with the created game.</returns>
     /// <response code="201">Returns the created game.</response>
     [HttpPost]
+    [ProducesResponseType(typeof(GameDto), StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [Consumes("application/json")]
+    [Produces("application/json")]
     public async Task<ActionResult<GameDto>> PostGame([FromBody] GameCreateDto gameDto)
     {
         if (!ModelState.IsValid)
@@ -113,6 +123,8 @@ public class GamesController(IServiceManager serviceManager) : ControllerBase
     /// <returns>No content if the update is successful</returns>
     /// <response code="204">No content if the delete is successful.</response>
     [HttpDelete("{id}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> DeleteGame(int id)
     {
         var result = await serviceManager.GameService.DeleteAsync(id);
@@ -131,6 +143,10 @@ public class GamesController(IServiceManager serviceManager) : ControllerBase
     /// <returns>No content if the update is successful.</returns>
     /// <response code ="204">No content if the patch is successful.</response>
     [HttpPatch("{id}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [Consumes("application/json-patch+json")]
     public async Task<IActionResult> PatchGame(int id, [FromBody] JsonPatchDocument<GamePatchDto> patchDoc)
     {
         if (patchDoc == null)
