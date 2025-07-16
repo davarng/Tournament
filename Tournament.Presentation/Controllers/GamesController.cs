@@ -101,23 +101,8 @@ public class GamesController(IServiceManager serviceManager) : ControllerBase
     [Produces("application/json")]
     public async Task<ActionResult<GameDto>> PostGame([FromBody] GameCreateDto gameDto)
     {
-        if (!ModelState.IsValid)
-            return BadRequest(ModelState);
-
-        try
-        {
-            var dto = await serviceManager.GameService.CreateAsync(gameDto);
-            return CreatedAtAction(nameof(GetGame), new { id = dto.Id }, dto);
-        }
-        catch (InvalidOperationException ex)
-        {
-            Response.ContentType = "application/json";
-            return Problem(
-                title: "Invalid Operation",
-                detail: ex.Message,
-                statusCode: StatusCodes.Status400BadRequest
-                );
-        }
+        var dto = await serviceManager.GameService.CreateAsync(gameDto);
+        return CreatedAtAction(nameof(GetGame), new { id = dto.Id }, dto);
     }
 
     /// <summary>

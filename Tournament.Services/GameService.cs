@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.JsonPatch;
+using Microsoft.AspNetCore.Http;
 using Service.Contracts;
 using System;
 using System.Collections.Generic;
@@ -10,6 +11,7 @@ using System.Threading.Tasks;
 using Tournament.Core.Contracts;
 using Tournament.Core.Dto;
 using Tournament.Core.Entities;
+using Tournament.Core.Exceptions;
 using Tournament.Core.Requests;
 
 namespace Tournament.Services;
@@ -22,12 +24,16 @@ public class GameService(IMapper mapper, IUnitOfWork unitOfWork) : IGameService
         var validationResults = new List<ValidationResult>();
         bool isValid = Validator.TryValidateObject(dto, validationContext, validationResults, true);
         if (!isValid)
-            throw new ValidationException("Invalid game data provided.");
+        {
+            var errorMessage = $"Validation failed for the following reasons:{Environment.NewLine}" +
+                $"{string.Join(Environment.NewLine, validationResults.Select(vr => $"- {vr.ErrorMessage}"))}";
+            throw new ApiException(StatusCodes.Status400BadRequest, "Invalid data", errorMessage);
+        }
 
         var lessThanTenGames = await unitOfWork.TournamentRepository.NumberOfGamesAsync(dto.TournamentId);
 
         if (!lessThanTenGames)
-            throw new InvalidOperationException("Cannot add more than 10 games to a tournament.");
+            throw new ApiException(StatusCodes.Status400BadRequest, "Invalid operation", "Cannot add more than 10 games to a tournament.");
 
         var game = mapper.Map<Game>(dto);
         unitOfWork.GameRepository.Create(game);
