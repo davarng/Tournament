@@ -31,12 +31,16 @@ public class GamesController(IServiceManager serviceManager) : ControllerBase
     [HttpGet]
     [ProducesResponseType(typeof(IEnumerable<GameDto>), StatusCodes.Status200OK)]
     [Produces("application/json")]
-    public async Task<ActionResult<IEnumerable<GameDto>>> GetGames([FromQuery] RequestParams requestParam)
+    public async Task<ActionResult> GetGames([FromQuery] RequestParams requestParam)
     {
         var pagedResult = await serviceManager.GameService.GetAllAsync(requestParam);
         Response.Headers.Append("X-Pagination", JsonSerializer.Serialize(pagedResult.metaData));
 
-        return Ok(pagedResult.gameDtos);
+        return Ok(new
+        {
+            games = pagedResult.gameDtos,
+            metaData = pagedResult.metaData
+        });
     }
 
     /// <summary>

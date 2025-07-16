@@ -32,12 +32,16 @@ public class TournamentDetailsController(IServiceManager serviceManager) : Contr
     [HttpGet]
     [ProducesResponseType(typeof(IEnumerable<TournamentDto>), StatusCodes.Status200OK)]
     [Produces("application/json")]
-    public async Task<ActionResult<IEnumerable<TournamentDto>>> GetAllTournamentDetails([FromQuery] TournamentRequestParams requestParams)
+    public async Task<ActionResult> GetAllTournamentDetails([FromQuery] TournamentRequestParams requestParams)
     {
         var pagedResult = await serviceManager.TournamentService.GetAllAsync(requestParams, false);
         Response.Headers.Append("X-Pagination", JsonSerializer.Serialize(pagedResult.metaData));
 
-        return Ok(pagedResult.tournamentDtos);
+        return Ok(new
+        {
+            tournaments = pagedResult.tournamentDtos,
+            metaData = pagedResult.metaData
+        });
     }
 
     /// <summary>
