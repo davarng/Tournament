@@ -73,17 +73,20 @@ public static class ExceptionMiddleware
         return error switch
         {
             ApiException apiEx => problemDetailsFactory.CreateProblemDetails(
-            context,
-            apiEx.StatusCode,
-            title: apiEx.Title,
-            detail: apiEx.Message,
-            instance: context.Request.Path),
+                context,
+                apiEx.StatusCode,
+                title: apiEx.Title,
+                detail: apiEx.Message,
+                instance: context.Request.Path
+                ),
 
             _ => problemDetailsFactory.CreateProblemDetails(
                 context,
                 StatusCodes.Status500InternalServerError,
                 title: "Internal Server Error",
-                detail: app.Environment.IsDevelopment() ? error.Message : "Un unexpected error occured.")
+                detail: app.Environment.IsDevelopment() ? error.Message : "An unexpected error occured.",
+                instance: context.Request.Path
+                )
         };
     }
 }
